@@ -82,167 +82,124 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== CALCULATOR =====
-    const materialSelect = document.getElementById('calc-material');
+    // ===== CALCULATOR (TABLE) =====
     const coatingSelect = document.getElementById('calc-coating');
-    const areaInput = document.getElementById('calc-area');
     const primerCheckbox = document.getElementById('calc-primer');
-    const calcBtn = document.getElementById('calc-btn');
-
-    // Coating options per material
-    const coatingOptions = {
-        mdf: [
-            { value: 'matte', label: 'Матовая эмаль' },
-            { value: 'gloss', label: 'Глянцевая эмаль' },
-            { value: 'highgloss', label: 'Высокий глянец (полиэфир)' },
-            { value: 'patina', label: 'Патина' }
-        ],
-        veneer: [
-            { value: 'tint_lac', label: 'Тонировка + лак' },
-            { value: 'lac', label: 'Лак' }
-        ],
-        wood: [
-            { value: 'matte', label: 'Матовая эмаль' },
-            { value: 'tint_lac', label: 'Тонировка + лак' },
-            { value: 'lac', label: 'Лак' }
-        ]
-    };
-
-    // Price map: material_coating -> price per m²
-    const priceMap = {
-        'mdf_matte': 18000,
-        'mdf_gloss': 22000,
-        'mdf_highgloss': 30000,
-        'mdf_patina': 28000,
-        'veneer_tint_lac': 18000,
-        'veneer_lac': 10000,
-        'wood_matte': 20000,
-        'wood_tint_lac': 20000,
-        'wood_lac': 12000
-    };
+    const calcTbody = document.getElementById('calc-tbody');
+    const addRowBtn = document.getElementById('calc-add-row');
 
     const PRIMER_PRICE = 6000;
-    const DELIVERY_FREE_MIN = 10;
-    const DELIVERY_PRICE = 5000;
-
-    // Time estimates
-    const timeMap = {
-        'mdf_matte': '3-5 дней',
-        'mdf_gloss': '5-7 дней',
-        'mdf_highgloss': '7-10 дней',
-        'mdf_patina': '5-7 дней',
-        'veneer_tint_lac': '3-5 дней',
-        'veneer_lac': '3-5 дней',
-        'wood_matte': '5-7 дней',
-        'wood_tint_lac': '5-7 дней',
-        'wood_lac': '3-5 дней'
-    };
-
-    // Update coating options when material changes
-    materialSelect.addEventListener('change', updateCoatings);
-
-    function updateCoatings() {
-        const material = materialSelect.value;
-        const options = coatingOptions[material];
-
-        coatingSelect.innerHTML = '';
-        options.forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt.value;
-            option.textContent = opt.label;
-            coatingSelect.appendChild(option);
-        });
-
-        // Auto-recalculate if result is visible
-        if (document.getElementById('calc-data').style.display !== 'none') {
-            calculate();
-        }
-    }
-
-    // Real-time calculation on any change
-    [materialSelect, coatingSelect, areaInput, primerCheckbox].forEach(el => {
-        el.addEventListener('change', () => {
-            if (document.getElementById('calc-data').style.display !== 'none') {
-                calculate();
-            }
-        });
-        if (el.type === 'number') {
-            el.addEventListener('input', () => {
-                if (document.getElementById('calc-data').style.display !== 'none') {
-                    calculate();
-                }
-            });
-        }
-    });
-
-    calcBtn.addEventListener('click', calculate);
 
     function formatPrice(num) {
         return num.toLocaleString('ru-RU') + ' ₸';
     }
 
-    function calculate() {
-        const material = materialSelect.value;
-        const coating = coatingSelect.value;
-        const area = parseFloat(areaInput.value) || 0;
+    function createRow() {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" placeholder="Кухня" class="row-room"></td>
+            <td><select class="row-thickness">
+                <option value="16">16 мм</option>
+                <option value="19">19 мм</option>
+                <option value="22">22 мм</option>
+            </select></td>
+            <td><input type="number" min="1" placeholder="716" class="row-height"></td>
+            <td><input type="number" min="1" placeholder="396" class="row-width"></td>
+            <td><input type="number" min="1" value="1" class="row-qty"></td>
+            <td class="cell-sqm">—</td>
+            <td><input type="text" placeholder="—" class="row-frez-sample"></td>
+            <td><input type="text" placeholder="—" class="row-frez-comment"></td>
+            <td><input type="text" placeholder="RAL 9003" class="row-color-sample"></td>
+            <td><input type="text" placeholder="—" class="row-color-comment"></td>
+            <td class="cell-checkbox"><input type="checkbox" class="row-prisadka"></td>
+            <td class="cell-cost">—</td>
+            <td><button type="button" class="row-delete-btn" title="Удалить">✕</button></td>
+        `;
+        calcTbody.appendChild(tr);
+
+        // Bind events
+        tr.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', recalcAll);
+            el.addEventListener('change', recalcAll);
+        });
+        tr.querySelector('.row-delete-btn').addEventListener('click', () => {
+            tr.remove();
+            recalcAll();
+        });
+
+        recalcAll();
+        return tr;
+    }
+
+    function getCoatingPrice() {
+        const opt = coatingSelect.options[coatingSelect.selectedIndex];
+        return parseInt(opt.dataset.price) || 0;
+    }
+
+    function recalcAll() {
+        const pricePerM2 = getCoatingPrice();
         const needPrimer = primerCheckbox.checked;
+        let totalQty = 0;
+        let totalSqm = 0;
+        let totalCost = 0;
 
-        if (area <= 0) {
-            alert('Укажите площадь (минимум 1 м²)');
-            return;
-        }
+        calcTbody.querySelectorAll('tr').forEach(tr => {
+            const h = parseFloat(tr.querySelector('.row-height').value) || 0;
+            const w = parseFloat(tr.querySelector('.row-width').value) || 0;
+            const qty = parseInt(tr.querySelector('.row-qty').value) || 0;
 
-        const key = `${material}_${coating}`;
-        const pricePerM2 = priceMap[key];
+            const sqm = (h * w * qty) / 1000000;
+            const unitPrice = pricePerM2 + (needPrimer ? PRIMER_PRICE : 0);
+            const cost = sqm * unitPrice;
 
-        if (!pricePerM2) {
-            alert('Выберите корректную комбинацию материала и покрытия');
-            return;
-        }
+            tr.querySelector('.cell-sqm').textContent = sqm > 0 ? sqm.toFixed(3) : '—';
+            tr.querySelector('.cell-cost').textContent = cost > 0 ? formatPrice(Math.round(cost)) : '—';
 
-        const paintCost = pricePerM2 * area;
-        const primerCost = needPrimer ? PRIMER_PRICE * area : 0;
-        const deliveryCost = area >= DELIVERY_FREE_MIN ? 0 : DELIVERY_PRICE;
-        const total = paintCost + primerCost + deliveryCost;
-        const timeEstimate = timeMap[key] || '3-5 дней';
+            totalQty += qty;
+            totalSqm += sqm;
+            totalCost += cost;
+        });
 
-        // Adjust time for large areas
-        let adjustedTime = timeEstimate;
-        if (area > 30) {
-            const days = timeEstimate.match(/(\d+)-(\d+)/);
-            if (days) {
-                adjustedTime = `${parseInt(days[1]) + 2}-${parseInt(days[2]) + 3} дней`;
-            }
-        }
+        document.getElementById('total-qty').textContent = totalQty || 0;
+        document.getElementById('total-sqm').textContent = totalSqm > 0 ? totalSqm.toFixed(3) : '0';
+        document.getElementById('total-cost').innerHTML = '<strong>' + formatPrice(Math.round(totalCost)) + '</strong>';
 
-        // Show results
-        document.querySelector('.calc__result-placeholder').style.display = 'none';
-        document.getElementById('calc-data').style.display = 'block';
+        // Update WhatsApp link
+        updateWhatsApp(totalSqm, totalCost);
+    }
 
-        document.getElementById('res-paint').textContent = formatPrice(paintCost);
+    function updateWhatsApp(totalSqm, totalCost) {
+        const coatingName = coatingSelect.options[coatingSelect.selectedIndex].text.split(' —')[0];
+        const primerText = primerCheckbox.checked ? 'Да' : 'Нет';
+        const rows = [];
+        calcTbody.querySelectorAll('tr').forEach((tr, i) => {
+            const room = tr.querySelector('.row-room').value || '—';
+            const h = tr.querySelector('.row-height').value || '—';
+            const w = tr.querySelector('.row-width').value || '—';
+            const qty = tr.querySelector('.row-qty').value || '—';
+            const sqm = tr.querySelector('.cell-sqm').textContent;
+            const cost = tr.querySelector('.cell-cost').textContent;
+            const color = tr.querySelector('.row-color-sample').value || '—';
+            rows.push(`${i+1}. ${room}: ${h}×${w}мм ×${qty}шт = ${sqm}м², цвет: ${color}, ${cost}`);
+        });
 
-        const primerRow = document.getElementById('res-primer-row');
-        if (needPrimer) {
-            primerRow.style.display = 'flex';
-            document.getElementById('res-primer').textContent = formatPrice(primerCost);
-        } else {
-            primerRow.style.display = 'none';
-        }
-
-        document.getElementById('res-delivery').textContent =
-            deliveryCost === 0 ? 'Бесплатно' : formatPrice(deliveryCost);
-        document.getElementById('res-time').textContent = adjustedTime;
-        document.getElementById('res-total').textContent = formatPrice(total);
-
-        // Build WhatsApp message
-        const materialName = materialSelect.options[materialSelect.selectedIndex].text;
-        const coatingName = coatingSelect.options[coatingSelect.selectedIndex].text;
-        const primerText = needPrimer ? ', с грунтовкой' : '';
-        const msg = `Здравствуйте! Хочу заказать покраску.\n\nМатериал: ${materialName}\nПокрытие: ${coatingName}${primerText}\nПлощадь: ${area} м²\nСтоимость: ${formatPrice(total)}\nСрок: ${adjustedTime}`;
+        let msg = `Здравствуйте! Заказ на покраску фасадов.\n\nПокрытие: ${coatingName}\nГрунтовка: ${primerText}\n\n`;
+        msg += rows.join('\n');
+        msg += `\n\nИТОГО: ${totalSqm.toFixed(3)} м², ${formatPrice(Math.round(totalCost))}`;
 
         document.getElementById('calc-order').href =
             `https://wa.me/77001234567?text=${encodeURIComponent(msg)}`;
     }
+
+    // Bind settings changes
+    coatingSelect.addEventListener('change', recalcAll);
+    primerCheckbox.addEventListener('change', recalcAll);
+    addRowBtn.addEventListener('click', () => createRow());
+
+    // Init with 3 rows
+    createRow();
+    createRow();
+    createRow();
 
     // ===== CONTACT FORM =====
     const contactForm = document.getElementById('contact-form');

@@ -629,20 +629,24 @@ img {
     padding: 100px 0;
 }
 
-.calc {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
+.calc-table-wrap {
     background: var(--bg-card);
     border: 1px solid rgba(201, 168, 76, 0.15);
     border-radius: var(--radius);
-    padding: 40px;
+    padding: 32px;
 }
 
-.calc__form {
+.calc-table-settings {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    gap: 32px;
+    align-items: flex-end;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.calc-table-settings .calc__field {
+    flex: 1;
+    min-width: 240px;
 }
 
 .calc__field label {
@@ -692,6 +696,7 @@ img {
     color: var(--text);
     text-transform: none;
     letter-spacing: 0;
+    padding: 14px 0;
 }
 
 .calc__field--checkbox input[type="checkbox"] {
@@ -701,84 +706,159 @@ img {
     cursor: pointer;
 }
 
-.calc__btn {
+.calc-table-scroll {
+    overflow-x: auto;
+    margin: 0 -8px;
+    padding: 0 8px;
+}
+
+.calc-table {
     width: 100%;
-    justify-content: center;
-    padding: 16px;
-    font-size: 16px;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1100px;
 }
 
-.calc__result {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.calc__result-placeholder {
+.calc-table thead th {
+    background: rgba(201, 168, 76, 0.1);
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 10px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
-    color: var(--text-dim);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+    white-space: nowrap;
 }
 
-.calc__result-placeholder svg {
-    opacity: 0.3;
+.calc-table tbody td {
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    vertical-align: middle;
 }
 
-.calc__result-data h3 {
+.calc-table tbody input,
+.calc-table tbody select {
+    width: 100%;
+    padding: 8px 6px;
+    background: var(--bg-lighter);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    color: var(--white);
     font-family: 'Inter', sans-serif;
-    font-size: 18px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--transition);
+    box-sizing: border-box;
+}
+
+.calc-table tbody input:focus,
+.calc-table tbody select:focus {
+    border-color: var(--gold);
+}
+
+.calc-table tbody input[type="number"] {
+    text-align: center;
+    -moz-appearance: textfield;
+}
+
+.calc-table tbody input[type="number"]::-webkit-inner-spin-button,
+.calc-table tbody input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.calc-table tbody input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+}
+
+.calc-table tbody .cell-sqm,
+.calc-table tbody .cell-cost {
+    text-align: center;
     font-weight: 600;
     color: var(--white);
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    white-space: nowrap;
 }
 
-.calc__row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    font-size: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.calc__row span:first-child {
-    color: var(--text-muted);
-}
-
-.calc__row span:last-child {
-    font-weight: 600;
-    color: var(--white);
-}
-
-.calc__row--total {
-    border-bottom: none;
-    margin-top: 8px;
-    padding-top: 16px;
-    border-top: 2px solid var(--gold);
-}
-
-.calc__row--total span:first-child {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--white);
-}
-
-.calc__row--total span:last-child {
-    font-size: 24px;
-    font-weight: 700;
+.calc-table tbody .cell-cost {
     color: var(--gold);
 }
 
+.calc-table tbody .cell-checkbox {
+    text-align: center;
+}
+
+.calc-table tfoot td {
+    padding: 12px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(201, 168, 76, 0.08);
+    color: var(--white);
+    font-size: 14px;
+    text-align: center;
+}
+
+.calc-table tfoot td:first-child {
+    text-align: left;
+}
+
+.calc-table tfoot #total-cost {
+    color: var(--gold);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.calc-table .row-delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all var(--transition);
+}
+
+.calc-table .row-delete-btn:hover {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.calc-table-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.calc-add-btn {
+    flex: 0 0 auto;
+}
+
 .calc__order-btn {
-    width: 100%;
+    flex: 1;
     justify-content: center;
-    margin-top: 24px;
-    padding: 16px;
+    padding: 14px 24px;
+}
+
+.btn--outline {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 14px 24px;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn--outline:hover {
+    background: rgba(201, 168, 76, 0.1);
 }
 
 /* ===== PROMO ===== */
