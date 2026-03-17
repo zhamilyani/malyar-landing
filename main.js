@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== CALCULATOR (TABLE) =====
     const coatingSelect = document.getElementById('calc-coating');
-    const primerCheckbox = document.getElementById('calc-primer');
+    const primerCheckbox = { checked: false }; // disabled
     const calcTbody = document.getElementById('calc-tbody');
     const addRowBtn = document.getElementById('calc-add-row');
 
@@ -188,13 +188,21 @@ document.addEventListener('DOMContentLoaded', () => {
         msg += `\n\nИТОГО: ${totalSqm.toFixed(3)} м², ${formatPrice(Math.round(totalCost))}`;
 
         document.getElementById('calc-order').href =
-            `https://wa.me/77001234567?text=${encodeURIComponent(msg)}`;
+            `https://wa.me/77074014040?text=${encodeURIComponent(msg)}`;
     }
 
     // Bind settings changes
     coatingSelect.addEventListener('change', recalcAll);
-    primerCheckbox.addEventListener('change', recalcAll);
     addRowBtn.addEventListener('click', () => createRow());
+
+    // Upload file — open WhatsApp with note
+    document.getElementById('calc-upload').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const msg = `Здравствуйте! Хочу отправить файл с деталями заказа: ${file.name}`;
+        window.open(`https://wa.me/77074014040?text=${encodeURIComponent(msg)}`, '_blank');
+        e.target.value = '';
+    });
 
     // Init with 3 rows
     createRow();
@@ -221,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (service) msg += `\nУслуга: ${service}`;
         if (comment) msg += `\nКомментарий: ${comment}`;
 
-        window.open(`https://wa.me/77001234567?text=${encodeURIComponent(msg)}`, '_blank');
+        window.open(`https://wa.me/77074014040?text=${encodeURIComponent(msg)}`, '_blank');
 
         contactForm.reset();
     });

@@ -396,8 +396,16 @@ img {
 
 .services__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(12, 1fr);
     gap: 20px;
+}
+
+.service-card:nth-child(-n+4) {
+    grid-column: span 3;
+}
+
+.service-card:nth-child(n+5) {
+    grid-column: span 4;
 }
 
 .service-card {
@@ -834,8 +842,16 @@ img {
     flex-wrap: wrap;
 }
 
-.calc-add-btn {
+.calc-add-btn,
+.calc-upload-btn {
     flex: 0 0 auto;
+}
+
+.calc-upload-btn {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .calc__order-btn {
@@ -1235,6 +1251,11 @@ img {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .service-card:nth-child(-n+4),
+    .service-card:nth-child(n+5) {
+        grid-column: span 1;
+    }
+
     .advantages__grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1304,6 +1325,11 @@ img {
 
     .services__grid {
         grid-template-columns: 1fr;
+    }
+
+    .service-card:nth-child(-n+4),
+    .service-card:nth-child(n+5) {
+        grid-column: span 1;
     }
 
     .advantages__grid {
