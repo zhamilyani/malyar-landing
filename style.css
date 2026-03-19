@@ -637,6 +637,118 @@ img {
     padding: 100px 0;
 }
 
+/* ===== ROW EDIT MODAL ===== */
+.calc-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    overflow-y: auto;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.calc-modal-overlay.active {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.calc-modal-overlay.visible {
+    opacity: 1;
+}
+
+.calc-modal {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    background: var(--bg-card);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius);
+    padding: 40px 36px;
+    margin: auto;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.3s ease;
+}
+
+.calc-modal-overlay.visible .calc-modal {
+    transform: translateY(0) scale(1);
+}
+
+.calc-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all var(--transition);
+    z-index: 1;
+}
+
+.calc-modal__close:hover {
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.1);
+}
+
+.calc-modal__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 28px;
+}
+
+.row-modal__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.row-modal__grid .calc__field input,
+.row-modal__grid .calc__field select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-lighter);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color var(--transition);
+}
+
+.row-modal__grid .calc__field input:focus,
+.row-modal__grid .calc__field select:focus {
+    border-color: var(--gold);
+}
+
+.row-modal__save {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+}
+
+.calc-table tbody tr {
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.calc-table tbody tr:hover {
+    background: rgba(201, 168, 76, 0.06);
+}
+
 .calc-table-wrap {
     background: var(--bg-card);
     border: 1px solid rgba(201, 168, 76, 0.15);
@@ -1348,8 +1460,22 @@ img {
         grid-template-columns: 1fr;
     }
 
-    .calc {
-        padding: 24px;
+    .calc-modal {
+        padding: 24px 16px;
+        margin: 8px;
+    }
+
+    .calc-modal__title {
+        font-size: 20px;
+        padding-right: 40px;
+    }
+
+    .row-modal__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .calc-table-wrap {
+        padding: 16px;
     }
 
     .promo__inner {

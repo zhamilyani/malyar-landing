@@ -456,7 +456,7 @@
 <section class="calculator" id="calculator">
     <div class="container">
         <h2 class="section-title animate-up">Калькулятор стоимости</h2>
-        <p class="section-subtitle animate-up">Заполните таблицу фасадов — стоимость рассчитается автоматически</p>
+        <p class="section-subtitle animate-up">Нажмите на строку для заполнения параметров фасада</p>
         <div class="calc-table-wrap animate-up">
             <div class="calc-table-settings">
                 <div class="calc__field">
@@ -475,33 +475,25 @@
                 <table class="calc-table" id="calc-table">
                     <thead>
                         <tr>
-                            <th rowspan="2">Помещение</th>
-                            <th rowspan="2">МДФ<br>толщина</th>
-                            <th rowspan="2">Высота<br>мм</th>
-                            <th rowspan="2">Ширина<br>мм</th>
-                            <th rowspan="2">Кол-во</th>
-                            <th rowspan="2">кв.м.</th>
-                            <th colspan="2">Фрезеровка</th>
-                            <th colspan="2">Цвет</th>
-                            <th rowspan="2">Присадка</th>
-                            <th rowspan="2">Стоимость</th>
-                            <th rowspan="2"></th>
-                        </tr>
-                        <tr>
-                            <th>Образец</th>
-                            <th>Комментарий</th>
-                            <th>Образец</th>
-                            <th>Комментарий</th>
+                            <th>№</th>
+                            <th>Помещение</th>
+                            <th>МДФ</th>
+                            <th>кв.м.</th>
+                            <th>Фрезеровка</th>
+                            <th>Цвет</th>
+                            <th>Покраска</th>
+                            <th>ЧПУ</th>
+                            <th>Стоимость</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="calc-tbody">
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4"><strong>ИТОГО</strong></td>
-                            <td id="total-qty">0</td>
+                            <td colspan="3"><strong>ИТОГО</strong></td>
                             <td id="total-sqm">0</td>
-                            <td colspan="5"></td>
+                            <td colspan="4"></td>
                             <td id="total-cost"><strong>0 ₸</strong></td>
                             <td></td>
                         </tr>
@@ -523,6 +515,78 @@
         </div>
     </div>
 </section>
+
+<!-- ROW EDIT MODAL -->
+<div class="calc-modal-overlay" id="row-modal">
+    <div class="calc-modal">
+        <button class="calc-modal__close" id="row-modal-close" aria-label="Закрыть">&times;</button>
+        <h2 class="calc-modal__title">Параметры фасада <span id="row-modal-num"></span></h2>
+        <div class="row-modal__form" id="row-modal-form">
+            <div class="row-modal__grid">
+                <div class="calc__field">
+                    <label>Помещение</label>
+                    <input type="text" id="rm-room" placeholder="Кухня">
+                </div>
+                <div class="calc__field">
+                    <label>МДФ толщина</label>
+                    <select id="rm-thickness">
+                        <option value="16">16 мм</option>
+                        <option value="19">19 мм</option>
+                        <option value="22">22 мм</option>
+                    </select>
+                </div>
+                <div class="calc__field">
+                    <label>Высота, мм</label>
+                    <input type="number" id="rm-height" min="1" placeholder="716">
+                </div>
+                <div class="calc__field">
+                    <label>Ширина, мм</label>
+                    <input type="number" id="rm-width" min="1" placeholder="396">
+                </div>
+                <div class="calc__field">
+                    <label>Кол-во</label>
+                    <input type="number" id="rm-qty" min="1" value="1">
+                </div>
+                <div class="calc__field">
+                    <label>Фрезеровка — образец</label>
+                    <input type="text" id="rm-frez-sample" placeholder="—">
+                </div>
+                <div class="calc__field">
+                    <label>Фрезеровка — комментарий</label>
+                    <input type="text" id="rm-frez-comment" placeholder="—">
+                </div>
+                <div class="calc__field">
+                    <label>Цвет — образец</label>
+                    <input type="text" id="rm-color-sample" placeholder="RAL 9003">
+                </div>
+                <div class="calc__field">
+                    <label>Цвет — комментарий</label>
+                    <input type="text" id="rm-color-comment" placeholder="—">
+                </div>
+                <div class="calc__field">
+                    <label>Покраска готовых фасадов</label>
+                    <select id="rm-painting">
+                        <option value="">— Не требуется —</option>
+                        <option value="straight">Прямые</option>
+                        <option value="milled">Фрезированные</option>
+                    </select>
+                </div>
+                <div class="calc__field">
+                    <label>Услуги ЧПУ</label>
+                    <select id="rm-cnc">
+                        <option value="">— Не требуется —</option>
+                        <option value="our_mdf">С нашим МДФ</option>
+                        <option value="your_mdf">С вашим МДФ</option>
+                    </select>
+                </div>
+                <div class="calc__field calc__field--checkbox">
+                    <label><input type="checkbox" id="rm-prisadka"> Присадка</label>
+                </div>
+            </div>
+            <button class="btn btn--primary row-modal__save" id="rm-save">Сохранить</button>
+        </div>
+    </div>
+</div>
 
 <!-- PROMO -->
 <section class="promo" id="promo">
