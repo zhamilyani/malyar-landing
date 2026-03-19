@@ -458,31 +458,17 @@
         <h2 class="section-title animate-up">Калькулятор стоимости</h2>
         <p class="section-subtitle animate-up">Нажмите на строку для заполнения параметров фасада</p>
         <div class="calc-table-wrap animate-up">
-            <div class="calc-table-settings">
-                <div class="calc__field">
-                    <label for="calc-coating">Тип покрытия</label>
-                    <select id="calc-coating">
-                        <option value="matte" data-price="18000">Матовая эмаль — 18 000 ₸/м²</option>
-                        <option value="gloss" data-price="22000">Глянцевая эмаль — 22 000 ₸/м²</option>
-                        <option value="highgloss" data-price="30000">Высокий глянец (полиэфир) — 30 000 ₸/м²</option>
-                        <option value="patina" data-price="28000">Патина — 28 000 ₸/м²</option>
-                        <option value="tint_lac" data-price="18000">Тонировка + лак — 18 000 ₸/м²</option>
-                        <option value="lac" data-price="10000">Лак — 10 000 ₸/м²</option>
-                    </select>
-                </div>
-            </div>
             <div class="calc-table-scroll">
                 <table class="calc-table" id="calc-table">
                     <thead>
                         <tr>
                             <th>№</th>
                             <th>Помещение</th>
-                            <th>МДФ</th>
+                            <th>Высота</th>
+                            <th>Ширина</th>
+                            <th>Кол-во</th>
                             <th>кв.м.</th>
-                            <th>Фрезеровка</th>
-                            <th>Цвет</th>
-                            <th>Покраска</th>
-                            <th>ЧПУ</th>
+                            <th>Покрытие</th>
                             <th>Стоимость</th>
                             <th></th>
                         </tr>
@@ -491,9 +477,10 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3"><strong>ИТОГО</strong></td>
+                            <td colspan="4"><strong>ИТОГО</strong></td>
+                            <td id="total-qty">0</td>
                             <td id="total-sqm">0</td>
-                            <td colspan="4"></td>
+                            <td></td>
                             <td id="total-cost"><strong>0 ₸</strong></td>
                             <td></td>
                         </tr>
@@ -564,6 +551,17 @@
                     <input type="text" id="rm-color-comment" placeholder="—">
                 </div>
                 <div class="calc__field">
+                    <label>Тип покрытия</label>
+                    <select id="rm-coating">
+                        <option value="matte" data-price="18000">Матовая эмаль — 18 000 ₸/м²</option>
+                        <option value="gloss" data-price="22000">Глянцевая эмаль — 22 000 ₸/м²</option>
+                        <option value="highgloss" data-price="30000">Высокий глянец (полиэфир) — 30 000 ₸/м²</option>
+                        <option value="patina" data-price="28000">Патина — 28 000 ₸/м²</option>
+                        <option value="tint_lac" data-price="18000">Тонировка + лак — 18 000 ₸/м²</option>
+                        <option value="lac" data-price="10000">Лак — 10 000 ₸/м²</option>
+                    </select>
+                </div>
+                <div class="calc__field">
                     <label>Покраска готовых фасадов</label>
                     <select id="rm-painting">
                         <option value="">— Не требуется —</option>
@@ -581,6 +579,10 @@
                 </div>
                 <div class="calc__field calc__field--checkbox">
                     <label><input type="checkbox" id="rm-prisadka"> Присадка</label>
+                </div>
+                <div class="calc__field calc__field--holes" id="rm-holes-wrap" style="display:none">
+                    <label>Количество отверстий</label>
+                    <input type="number" id="rm-holes" min="1" placeholder="0">
                 </div>
             </div>
             <button class="btn btn--primary row-modal__save" id="rm-save">Сохранить</button>

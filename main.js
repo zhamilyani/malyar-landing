@@ -83,12 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== CALCULATOR =====
-    const coatingSelect = document.getElementById('calc-coating');
     const calcTbody = document.getElementById('calc-tbody');
     const addRowBtn = document.getElementById('calc-add-row');
     const rowModal = document.getElementById('row-modal');
 
     const PRIMER_PRICE = 6000;
+    const COATING_LABELS = { matte: 'Матовая эмаль', gloss: 'Глянцевая эмаль', highgloss: 'Высокий глянец', patina: 'Патина', tint_lac: 'Тонировка + лак', lac: 'Лак' };
+    const COATING_PRICES = { matte: 18000, gloss: 22000, highgloss: 30000, patina: 28000, tint_lac: 18000, lac: 10000 };
     const PAINTING_LABELS = { '': '—', straight: 'Прямые', milled: 'Фрезированные' };
     const CNC_LABELS = { '': '—', our_mdf: 'Наш МДФ', your_mdf: 'Ваш МДФ' };
 
@@ -113,17 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.dataset.colorComment = '';
         tr.dataset.painting = '';
         tr.dataset.cnc = '';
+        tr.dataset.coating = 'matte';
+        tr.dataset.coatingPrice = '18000';
         tr.dataset.prisadka = 'false';
+        tr.dataset.holes = '';
 
         tr.innerHTML = `
             <td class="cell-num">${idx}</td>
             <td class="cell-room">—</td>
-            <td class="cell-thickness">16 мм</td>
+            <td class="cell-height">—</td>
+            <td class="cell-width">—</td>
+            <td class="cell-qty">1</td>
             <td class="cell-sqm">—</td>
-            <td class="cell-frez">—</td>
-            <td class="cell-color">—</td>
-            <td class="cell-painting">—</td>
-            <td class="cell-cnc">—</td>
+            <td class="cell-coating">Матовая эмаль</td>
             <td class="cell-cost">—</td>
             <td><button type="button" class="row-delete-btn" title="Удалить">✕</button></td>
         `;
@@ -153,11 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateRowDisplay(tr) {
         const d = tr.dataset;
         tr.querySelector('.cell-room').textContent = d.room || '—';
-        tr.querySelector('.cell-thickness').textContent = d.thickness + ' мм';
-        tr.querySelector('.cell-frez').textContent = d.frezSample || '—';
-        tr.querySelector('.cell-color').textContent = d.colorSample || '—';
-        tr.querySelector('.cell-painting').textContent = PAINTING_LABELS[d.painting] || '—';
-        tr.querySelector('.cell-cnc').textContent = CNC_LABELS[d.cnc] || '—';
+        tr.querySelector('.cell-height').textContent = d.height || '—';
+        tr.querySelector('.cell-width').textContent = d.width || '—';
+        tr.querySelector('.cell-qty').textContent = d.qty || '1';
+        tr.querySelector('.cell-coating').textContent = COATING_LABELS[d.coating] || 'Матовая эмаль';
     }
 
     // --- Modal open/close ---
@@ -176,9 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-frez-comment').value = d.frezComment;
         document.getElementById('rm-color-sample').value = d.colorSample;
         document.getElementById('rm-color-comment').value = d.colorComment;
+        document.getElementById('rm-coating').value = d.coating;
         document.getElementById('rm-painting').value = d.painting;
         document.getElementById('rm-cnc').value = d.cnc;
         document.getElementById('rm-prisadka').checked = d.prisadka === 'true';
+        document.getElementById('rm-holes').value = d.holes;
+        document.getElementById('rm-holes-wrap').style.display = d.prisadka === 'true' ? '' : 'none';
 
         rowModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -208,9 +213,13 @@ document.addEventListener('DOMContentLoaded', () => {
         d.frezComment = document.getElementById('rm-frez-comment').value;
         d.colorSample = document.getElementById('rm-color-sample').value;
         d.colorComment = document.getElementById('rm-color-comment').value;
+        const coatingEl = document.getElementById('rm-coating');
+        d.coating = coatingEl.value;
+        d.coatingPrice = coatingEl.options[coatingEl.selectedIndex].dataset.price;
         d.painting = document.getElementById('rm-painting').value;
         d.cnc = document.getElementById('rm-cnc').value;
         d.prisadka = document.getElementById('rm-prisadka').checked ? 'true' : 'false';
+        d.holes = d.prisadka === 'true' ? document.getElementById('rm-holes').value : '';
 
         updateRowDisplay(editingRow);
         recalcAll();
@@ -220,16 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('row-modal-close').addEventListener('click', closeRowModal);
     rowModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeRowModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && rowModal.classList.contains('active')) closeRowModal(); });
+    document.getElementById('rm-prisadka').addEventListener('change', (e) => {
+        document.getElementById('rm-holes-wrap').style.display = e.target.checked ? '' : 'none';
+    });
     document.getElementById('rm-save').addEventListener('click', saveRowModal);
 
     // --- Calculations ---
-    function getCoatingPrice() {
-        const opt = coatingSelect.options[coatingSelect.selectedIndex];
-        return parseInt(opt.dataset.price) || 0;
-    }
-
     function recalcAll() {
-        const pricePerM2 = getCoatingPrice();
         let totalQty = 0;
         let totalSqm = 0;
         let totalCost = 0;
@@ -240,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const w = parseFloat(d.width) || 0;
             const qty = parseInt(d.qty) || 0;
             const hasPrimer = d.prisadka === 'true';
+            const pricePerM2 = parseInt(d.coatingPrice) || COATING_PRICES[d.coating] || 18000;
 
             const sqm = (h * w * qty) / 1000000;
             const unitPrice = pricePerM2 + (hasPrimer ? PRIMER_PRICE : 0);
@@ -253,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             totalCost += cost;
         });
 
+        document.getElementById('total-qty').textContent = totalQty || 0;
         document.getElementById('total-sqm').textContent = totalSqm > 0 ? totalSqm.toFixed(3) : '0';
         document.getElementById('total-cost').innerHTML = '<strong>' + formatPrice(Math.round(totalCost)) + '</strong>';
 
@@ -260,23 +268,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateWhatsApp(totalSqm, totalCost) {
-        const coatingName = coatingSelect.options[coatingSelect.selectedIndex].text.split(' —')[0];
         const rows = [];
         calcTbody.querySelectorAll('tr').forEach((tr, i) => {
             const d = tr.dataset;
             const sqm = tr.querySelector('.cell-sqm').textContent;
             const cost = tr.querySelector('.cell-cost').textContent;
-            const painting = PAINTING_LABELS[d.painting] || '—';
-            const cnc = CNC_LABELS[d.cnc] || '—';
+            const coating = COATING_LABELS[d.coating] || 'Матовая эмаль';
             let line = `${i+1}. ${d.room || '—'}: ${d.height || '—'}×${d.width || '—'}мм ×${d.qty || 1}шт = ${sqm}м²`;
-            line += `, цвет: ${d.colorSample || '—'}, ${cost}`;
-            if (d.painting) line += `, покраска: ${painting}`;
-            if (d.cnc) line += `, ЧПУ: ${cnc}`;
-            if (d.prisadka === 'true') line += `, присадка: да`;
+            line += `, покрытие: ${coating}, цвет: ${d.colorSample || '—'}, ${cost}`;
+            if (d.painting) line += `, покраска: ${PAINTING_LABELS[d.painting]}`;
+            if (d.cnc) line += `, ЧПУ: ${CNC_LABELS[d.cnc]}`;
+            if (d.prisadka === 'true') line += `, присадка: да (${d.holes || '—'} отв.)`;
             rows.push(line);
         });
 
-        let msg = `Здравствуйте! Заказ на покраску фасадов.\n\nПокрытие: ${coatingName}\n\n`;
+        let msg = `Здравствуйте! Заказ на покраску фасадов.\n\n`;
         msg += rows.join('\n');
         msg += `\n\nИТОГО: ${totalSqm.toFixed(3)} м², ${formatPrice(Math.round(totalCost))}`;
 
@@ -284,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `https://wa.me/77074014040?text=${encodeURIComponent(msg)}`;
     }
 
-    coatingSelect.addEventListener('change', recalcAll);
     addRowBtn.addEventListener('click', () => createRow());
 
     document.getElementById('calc-upload').addEventListener('change', (e) => {
