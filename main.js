@@ -118,6 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.dataset.coatingPrice = '18000';
         tr.dataset.prisadka = 'false';
         tr.dataset.holes = '';
+        tr.dataset.holesDrawing = 'false';
+        tr.dataset.gloss = 'false';
+        tr.dataset.glossColor = '';
+        tr.dataset.combined = 'false';
+        tr.dataset.color2Sample = '';
+        tr.dataset.color2Comment = '';
 
         tr.innerHTML = `
             <td class="cell-num">${idx}</td>
@@ -183,7 +189,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-cnc').value = d.cnc;
         document.getElementById('rm-prisadka').checked = d.prisadka === 'true';
         document.getElementById('rm-holes').value = d.holes;
+        document.getElementById('rm-holes-drawing').checked = d.holesDrawing === 'true';
+        document.getElementById('rm-holes').disabled = d.holesDrawing === 'true';
+        document.getElementById('rm-holes').placeholder = d.holesDrawing === 'true' ? 'Согласно чертежа' : '0';
         document.getElementById('rm-holes-wrap').style.display = d.prisadka === 'true' ? '' : 'none';
+        document.getElementById('rm-combined').checked = d.combined === 'true';
+        document.getElementById('rm-color2-sample').value = d.color2Sample;
+        document.getElementById('rm-color2-comment').value = d.color2Comment;
+        const showCombined = d.combined === 'true' ? '' : 'none';
+        document.getElementById('rm-color2-sample-wrap').style.display = showCombined;
+        document.getElementById('rm-color2-sample-field').style.display = showCombined;
+        document.getElementById('rm-color2-comment-field').style.display = showCombined;
+        document.getElementById('rm-gloss').checked = d.gloss === 'true';
 
         rowModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -219,7 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
         d.painting = document.getElementById('rm-painting').value;
         d.cnc = document.getElementById('rm-cnc').value;
         d.prisadka = document.getElementById('rm-prisadka').checked ? 'true' : 'false';
-        d.holes = d.prisadka === 'true' ? document.getElementById('rm-holes').value : '';
+        d.holesDrawing = document.getElementById('rm-holes-drawing').checked ? 'true' : 'false';
+        d.holes = d.prisadka === 'true' ? (d.holesDrawing === 'true' ? 'согласно чертежа' : document.getElementById('rm-holes').value) : '';
+        d.combined = document.getElementById('rm-combined').checked ? 'true' : 'false';
+        d.color2Sample = d.combined === 'true' ? document.getElementById('rm-color2-sample').value : '';
+        d.color2Comment = d.combined === 'true' ? document.getElementById('rm-color2-comment').value : '';
+        d.gloss = document.getElementById('rm-gloss').checked ? 'true' : 'false';
 
         updateRowDisplay(editingRow);
         recalcAll();
@@ -231,6 +253,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && rowModal.classList.contains('active')) closeRowModal(); });
     document.getElementById('rm-prisadka').addEventListener('change', (e) => {
         document.getElementById('rm-holes-wrap').style.display = e.target.checked ? '' : 'none';
+    });
+    document.getElementById('rm-holes-drawing').addEventListener('change', (e) => {
+        const holesInput = document.getElementById('rm-holes');
+        if (e.target.checked) {
+            holesInput.value = '';
+            holesInput.disabled = true;
+            holesInput.placeholder = 'Согласно чертежа';
+        } else {
+            holesInput.disabled = false;
+            holesInput.placeholder = '0';
+        }
+    });
+    document.getElementById('rm-combined').addEventListener('change', (e) => {
+        const show = e.target.checked ? '' : 'none';
+        document.getElementById('rm-color2-sample-wrap').style.display = show;
+        document.getElementById('rm-color2-sample-field').style.display = show;
+        document.getElementById('rm-color2-comment-field').style.display = show;
     });
     document.getElementById('rm-save').addEventListener('click', saveRowModal);
 
@@ -271,15 +310,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const rows = [];
         calcTbody.querySelectorAll('tr').forEach((tr, i) => {
             const d = tr.dataset;
+            // Пропускаем пустые строки (нет размеров)
+            if (!d.height && !d.width) return;
+
             const sqm = tr.querySelector('.cell-sqm').textContent;
             const cost = tr.querySelector('.cell-cost').textContent;
-            const coating = COATING_LABELS[d.coating] || 'Матовая эмаль';
-            let line = `${i+1}. ${d.room || '—'}: ${d.height || '—'}×${d.width || '—'}мм ×${d.qty || 1}шт = ${sqm}м²`;
-            line += `, покрытие: ${coating}, цвет: ${d.colorSample || '—'}, ${cost}`;
-            if (d.painting) line += `, покраска: ${PAINTING_LABELS[d.painting]}`;
-            if (d.cnc) line += `, ЧПУ: ${CNC_LABELS[d.cnc]}`;
-            if (d.prisadka === 'true') line += `, присадка: да (${d.holes || '—'} отв.)`;
-            rows.push(line);
+            const parts = [];
+            if (d.room) parts.push(d.room);
+            parts.push(`${d.height}×${d.width}мм ×${d.qty || 1}шт = ${sqm}м²`);
+            parts.push(COATING_LABELS[d.coating] || 'Матовая эмаль');
+            if (d.colorSample) parts.push(`цвет: ${d.colorSample}`);
+            if (d.colorComment) parts.push(`(${d.colorComment})`);
+            if (d.frezSample) parts.push(`фрезеровка: ${d.frezSample}`);
+            if (d.frezComment) parts.push(`(${d.frezComment})`);
+            if (d.painting) parts.push(`покраска: ${PAINTING_LABELS[d.painting]}`);
+            if (d.cnc) parts.push(`ЧПУ: ${CNC_LABELS[d.cnc]}`);
+            if (d.combined === 'true') {
+                let c2 = 'цвет 2: ' + (d.color2Sample || '—');
+                if (d.color2Comment) c2 += ` (${d.color2Comment})`;
+                parts.push(c2);
+            }
+            if (d.prisadka === 'true') parts.push(`присадка: ${d.holes || '—'} отв.`);
+            if (d.gloss === 'true') parts.push('глянец: да');
+            parts.push(cost);
+            rows.push(`${rows.length + 1}. ${parts.join(', ')}`);
         });
 
         let msg = `Здравствуйте! Заказ на покраску фасадов.\n\n`;
@@ -300,6 +354,83 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.value = '';
     });
 
+    // ===== CRM INTEGRATION =====
+    const CRM_URL = 'https://malyar-crm-production.up.railway.app';
+
+    function sendToCRM() {
+        const rows = [];
+        calcTbody.querySelectorAll('tr').forEach(tr => {
+            const d = tr.dataset;
+            if (!d.height && !d.width) return;
+            const h = parseFloat(d.height) || 0;
+            const w = parseFloat(d.width) || 0;
+            const qty = parseInt(d.qty) || 1;
+            const sqm = (h * w * qty) / 1000000;
+            const pricePerM2 = parseInt(d.coatingPrice) || COATING_PRICES[d.coating] || 18000;
+            const hasPrimer = d.prisadka === 'true';
+            const cost = sqm * (pricePerM2 + (hasPrimer ? PRIMER_PRICE : 0));
+            rows.push({
+                room: d.room || '',
+                height: h, width: w, qty: qty,
+                coating: d.coating,
+                colorSample: d.colorSample || '',
+                colorComment: d.colorComment || '',
+                frezSample: d.frezSample || '',
+                frezComment: d.frezComment || '',
+                painting: d.painting || '',
+                cnc: d.cnc || '',
+                combined: d.combined === 'true',
+                color2Sample: d.color2Sample || '',
+                color2Comment: d.color2Comment || '',
+                prisadka: d.prisadka === 'true',
+                holes: d.holes || '',
+                gloss: d.gloss === 'true',
+                sqm: Math.round(sqm * 1000) / 1000,
+                cost: Math.round(cost)
+            });
+        });
+        if (!rows.length) return;
+
+        const totalSqm = rows.reduce((s, r) => s + r.sqm, 0);
+        const totalCost = rows.reduce((s, r) => s + r.cost, 0);
+
+        // Build same message as WhatsApp
+        const msgRows = [];
+        rows.forEach((r, i) => {
+            const parts = [];
+            if (r.room) parts.push(r.room);
+            parts.push(`${r.height}\u00d7${r.width}мм \u00d7${r.qty}шт = ${r.sqm}м\u00b2`);
+            parts.push(COATING_LABELS[r.coating] || 'Матовая эмаль');
+            if (r.colorSample) parts.push('цвет: ' + r.colorSample);
+            if (r.frezSample) parts.push('фрезеровка: ' + r.frezSample);
+            parts.push(formatPrice(r.cost));
+            msgRows.push((i + 1) + '. ' + parts.join(', '));
+        });
+
+        fetch(CRM_URL + '/api/orders/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                source: 'calculator',
+                rows: rows,
+                totalSqm: Math.round(totalSqm * 1000) / 1000,
+                totalCost: Math.round(totalCost),
+                message: msgRows.join('\n') + '\n\nИТОГО: ' + totalSqm.toFixed(3) + ' м\u00b2, ' + formatPrice(Math.round(totalCost))
+            })
+        }).catch(() => {});  // silent — не блокируем WhatsApp если CRM недоступна
+    }
+
+    // Min order check on WhatsApp button
+    document.getElementById('calc-order').addEventListener('click', (e) => {
+        const totalSqm = parseFloat(document.getElementById('total-sqm').textContent) || 0;
+        if (totalSqm < 2) {
+            e.preventDefault();
+            showNotification('Извините, не достигнут минимальный порог. Общая квадратура заказа не должна составлять менее 2 кв.м.', 'error');
+        } else {
+            sendToCRM();
+        }
+    });
+
     // Init with 3 rows
     createRow();
     createRow();
@@ -317,18 +448,194 @@ document.addEventListener('DOMContentLoaded', () => {
         const comment = document.getElementById('form-comment').value.trim();
 
         if (!name || !phone) {
-            alert('Заполните имя и телефон');
+            showNotification('Заполните имя и телефон', 'error');
             return;
         }
 
-        let msg = `Заявка с сайта MALYAR PRO\n\nИмя: ${name}\nТелефон: ${phone}`;
+        let msg = `Заявка с сайта malyarkapro.kz\n\nИмя: ${name}\nТелефон: ${phone}`;
         if (service) msg += `\nУслуга: ${service}`;
         if (comment) msg += `\nКомментарий: ${comment}`;
 
         window.open(`https://wa.me/77074014040?text=${encodeURIComponent(msg)}`, '_blank');
 
+        // Send to CRM
+        fetch(CRM_URL + '/api/orders/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                source: 'website_form',
+                clientName: name,
+                clientPhone: phone,
+                message: (service ? 'Услуга: ' + service + '\n' : '') + (comment ? 'Комментарий: ' + comment : '')
+            })
+        }).catch(() => {});
+
         contactForm.reset();
     });
+
+    // ===== GALLERY MODAL =====
+    const galleryModal = document.getElementById('gallery-modal');
+    const galleryImg = document.getElementById('gallery-img');
+    const galleryCounter = document.getElementById('gallery-counter');
+    let currentGallery = [];
+    let currentIndex = 0;
+
+    function openGallery(category, startIndex) {
+        currentGallery = (typeof GALLERY_DATA !== 'undefined' && GALLERY_DATA[category]) || [];
+        if (!currentGallery.length) return;
+        currentIndex = startIndex || 0;
+        showSlide();
+        galleryModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeGallery() {
+        galleryModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function showSlide() {
+        galleryImg.src = currentGallery[currentIndex];
+        galleryCounter.textContent = (currentIndex + 1) + ' / ' + currentGallery.length;
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % currentGallery.length;
+        showSlide();
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+        showSlide();
+    }
+
+    // Click handlers
+    document.querySelectorAll('.portfolio-card--gallery').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.gallery;
+            openGallery(category, 0);
+        });
+    });
+
+    if (galleryModal) {
+        galleryModal.querySelector('.gallery-modal__close').addEventListener('click', closeGallery);
+        galleryModal.querySelector('.gallery-modal__backdrop').addEventListener('click', closeGallery);
+        galleryModal.querySelector('.gallery-modal__arrow--next').addEventListener('click', nextSlide);
+        galleryModal.querySelector('.gallery-modal__arrow--prev').addEventListener('click', prevSlide);
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (!galleryModal.classList.contains('active')) return;
+            if (e.key === 'Escape') closeGallery();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Swipe support (mobile)
+        let touchStartX = 0;
+        galleryModal.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        galleryModal.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(diff) > 50) {
+                diff < 0 ? nextSlide() : prevSlide();
+            }
+        }, { passive: true });
+    }
+
+    // ===== SAMPLES MODAL =====
+    const samplesModal = document.getElementById('samples-modal');
+    const samplesPreview = document.getElementById('samples-preview');
+    const samplesPreviewImg = document.getElementById('samples-preview-img');
+    const samplesPreviewNum = document.getElementById('samples-preview-num');
+    const samplesPreviewCounter = document.getElementById('samples-preview-counter');
+    const sampleThumbs = Array.from(samplesModal.querySelectorAll('.sample-thumb'));
+    let currentSampleIdx = 0;
+
+    function showSamplePreview(idx) {
+        currentSampleIdx = idx;
+        const thumb = sampleThumbs[idx];
+        samplesPreviewImg.src = thumb.querySelector('img').src;
+        samplesPreviewNum.textContent = 'Образец ' + thumb.dataset.num;
+        samplesPreviewCounter.textContent = (idx + 1) + ' / ' + sampleThumbs.length;
+        samplesPreview.classList.add('active');
+    }
+
+    function nextSample() {
+        showSamplePreview((currentSampleIdx + 1) % sampleThumbs.length);
+    }
+
+    function prevSample() {
+        showSamplePreview((currentSampleIdx - 1 + sampleThumbs.length) % sampleThumbs.length);
+    }
+
+    function closeSamplePreview() {
+        samplesPreview.classList.remove('active');
+    }
+
+    document.getElementById('btn-show-samples').addEventListener('click', () => {
+        samplesModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function closeSamplesModal() {
+        samplesModal.classList.remove('active');
+        closeSamplePreview();
+        document.body.style.overflow = '';
+    }
+
+    samplesModal.querySelector('.samples-modal__close').addEventListener('click', closeSamplesModal);
+    samplesModal.querySelector('.samples-modal__backdrop').addEventListener('click', closeSamplesModal);
+
+    // Preview arrows
+    samplesPreview.querySelector('.samples-preview__arrow--next').addEventListener('click', (e) => { e.stopPropagation(); nextSample(); });
+    samplesPreview.querySelector('.samples-preview__arrow--prev').addEventListener('click', (e) => { e.stopPropagation(); prevSample(); });
+    samplesPreview.querySelector('.samples-preview__close').addEventListener('click', (e) => { e.stopPropagation(); closeSamplePreview(); });
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+        if (!samplesModal.classList.contains('active')) return;
+        if (e.key === 'Escape') {
+            if (samplesPreview.classList.contains('active')) {
+                closeSamplePreview();
+            } else {
+                closeSamplesModal();
+            }
+        }
+        if (samplesPreview.classList.contains('active')) {
+            if (e.key === 'ArrowRight') nextSample();
+            if (e.key === 'ArrowLeft') prevSample();
+        }
+    });
+
+    // Click/tap on thumbnail → open preview carousel
+    sampleThumbs.forEach((thumb, idx) => {
+        thumb.addEventListener('click', () => {
+            showSamplePreview(idx);
+        });
+    });
+
+    // Select button in preview
+    document.getElementById('samples-preview-select').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const num = sampleThumbs[currentSampleIdx].dataset.num;
+        document.getElementById('rm-frez-sample').value = num;
+        closeSamplesModal();
+        showNotification('Выбран образец ' + num, 'info');
+    });
+
+    // Swipe on preview (mobile)
+    let sampleTouchX = 0;
+    samplesPreview.addEventListener('touchstart', (e) => {
+        sampleTouchX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    samplesPreview.addEventListener('touchend', (e) => {
+        const diff = e.changedTouches[0].screenX - sampleTouchX;
+        if (Math.abs(diff) > 50) {
+            diff < 0 ? nextSample() : prevSample();
+        }
+    }, { passive: true });
 
     // ===== SMOOTH SCROLL for anchor links =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -343,5 +650,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // ===== NOTIFICATION (replaces alert) =====
+    window.showNotification = function(text, type) {
+        const el = document.createElement('div');
+        el.className = 'notification notification--' + (type || 'info');
+        el.textContent = text;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('visible'));
+        setTimeout(() => {
+            el.classList.remove('visible');
+            setTimeout(() => el.remove(), 300);
+        }, 3000);
+    };
 
 });
