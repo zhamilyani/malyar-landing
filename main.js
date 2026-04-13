@@ -87,11 +87,77 @@ document.addEventListener('DOMContentLoaded', () => {
     const addRowBtn = document.getElementById('calc-add-row');
     const rowModal = document.getElementById('row-modal');
 
-    const PRIMER_PRICE = 6000;
-    const COATING_LABELS = { matte: 'Матовая эмаль', gloss: 'Глянцевая эмаль', highgloss: 'Высокий глянец', patina: 'Патина', tint_lac: 'Тонировка + лак', lac: 'Лак' };
-    const COATING_PRICES = { matte: 18000, gloss: 22000, highgloss: 30000, patina: 28000, tint_lac: 18000, lac: 10000 };
-    const PAINTING_LABELS = { '': '—', straight: 'Прямые', milled: 'Фрезированные' };
+    // === PRICING ===
+    const HOLE_PRICE = 1000; // ₸ за одно отверстие присадки
+
+    // База — матовая эмаль МДФ, ₸/м²
+    const BASE_MDF = {
+        8:  { straight: 21500, milled: 23500 },
+        10: { straight: 22500, milled: 24500 },
+        12: { straight: 23500, milled: 25500 },
+        16: { straight: 24500, milled: 26500 },
+        18: { straight: 25500, milled: 27500 },
+        22: { straight: 27500, milled: 29500 },
+    };
+    // Шпон — матовый лак, ₸/м²
+    const BASE_VENEER = { straight: 17000, milled: 19000 };
+    // Готовые фасады — покраска, ₸/м²
+    const BASE_READY = { straight: 20000, milled: 22000 };
+
+    // Доплаты для МДФ и готовых фасадов, ₸/м²
+    const SURCHARGE = {
+        gloss: 20000,
+        lac: 9000,
+        patina_simple: 13000,
+        patina_gloss50: 22000,
+        patina_gloss100: 28000,
+    };
+    // Доплаты для шпона, ₸/м²
+    const SURCHARGE_VENEER = {
+        gloss: 20000,       // глянцевый лак
+        patina: 8000,       // патина+лак (единый вариант)
+    };
+
+    const MATERIAL_LABELS = { mdf: 'МДФ', veneer: 'Шпон', ready: 'Готовые фасады' };
+    const FRES_LABELS = { straight: 'прямые', milled: 'фрезерованные' };
+    const PATINA_VARIANT_LABELS = {
+        simple: 'Простое патинирование',
+        gloss50: 'Патина + глянец 50%',
+        gloss100: 'Патина + глянец 100%',
+    };
     const CNC_LABELS = { '': '—', our_mdf: 'Наш МДФ', your_mdf: 'Ваш МДФ' };
+
+    // Вычисление базовой цены ₸/м²
+    function getBasePrice(material, thickness, fres) {
+        if (material === 'mdf') return (BASE_MDF[thickness] || BASE_MDF[16])[fres] || 0;
+        if (material === 'veneer') return BASE_VENEER[fres] || 0;
+        if (material === 'ready') return BASE_READY[fres] || 0;
+        return 0;
+    }
+
+    // Вычисление доплат ₸/м² по выбранным опциям
+    function getSurcharge(material, opts) {
+        let sum = 0;
+        if (material === 'veneer') {
+            if (opts.gloss) sum += SURCHARGE_VENEER.gloss;
+            if (opts.patina) sum += SURCHARGE_VENEER.patina;
+        } else {
+            if (opts.gloss) sum += SURCHARGE.gloss;
+            if (opts.lac) sum += SURCHARGE.lac;
+            if (opts.patina) {
+                const v = opts.patinaVariant || 'simple';
+                sum += SURCHARGE['patina_' + v] || SURCHARGE.patina_simple;
+            }
+        }
+        return sum;
+    }
+
+    function getBaseLabel(material) {
+        if (material === 'mdf') return 'Матовая эмаль';
+        if (material === 'veneer') return 'Матовый лак';
+        if (material === 'ready') return 'Покраска фасада';
+        return '—';
+    }
 
     let editingRow = null;
 
@@ -104,7 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const tr = document.createElement('tr');
         const idx = calcTbody.querySelectorAll('tr').length + 1;
         tr.dataset.room = '';
+        tr.dataset.material = 'mdf';
         tr.dataset.thickness = '16';
+        tr.dataset.fres = 'straight';
         tr.dataset.height = '';
         tr.dataset.width = '';
         tr.dataset.qty = '1';
@@ -112,15 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.dataset.frezComment = '';
         tr.dataset.colorSample = '';
         tr.dataset.colorComment = '';
-        tr.dataset.painting = '';
         tr.dataset.cnc = '';
-        tr.dataset.coating = 'matte';
-        tr.dataset.coatingPrice = '18000';
+        tr.dataset.gloss = 'false';
+        tr.dataset.patina = 'false';
+        tr.dataset.patinaVariant = 'simple';
+        tr.dataset.lac = 'false';
         tr.dataset.prisadka = 'false';
         tr.dataset.holes = '';
         tr.dataset.holesDrawing = 'false';
-        tr.dataset.gloss = 'false';
-        tr.dataset.glossColor = '';
         tr.dataset.combined = 'false';
         tr.dataset.color2Sample = '';
         tr.dataset.color2Comment = '';
@@ -132,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <td class="cell-width">—</td>
             <td class="cell-qty">1</td>
             <td class="cell-sqm">—</td>
-            <td class="cell-coating">Матовая эмаль</td>
+            <td class="cell-coating">МДФ 16 мм, прямые</td>
             <td class="cell-cost">—</td>
             <td><button type="button" class="row-delete-btn" title="Удалить">✕</button></td>
         `;
@@ -159,13 +226,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function buildCoatingSummary(d) {
+        const parts = [];
+        if (d.material === 'mdf') parts.push('МДФ ' + (d.thickness || '16') + ' мм');
+        else parts.push(MATERIAL_LABELS[d.material] || 'МДФ');
+        parts.push(FRES_LABELS[d.fres] || 'прямые');
+        const add = [];
+        if (d.gloss === 'true') add.push('глянец');
+        if (d.patina === 'true') {
+            const v = d.material === 'veneer' ? 'патина+лак' : (PATINA_VARIANT_LABELS[d.patinaVariant] || 'патина').toLowerCase();
+            add.push(v);
+        }
+        if (d.lac === 'true' && d.material !== 'veneer') add.push('лак');
+        if (add.length) parts.push('+ ' + add.join(', '));
+        return parts.join(', ');
+    }
+
     function updateRowDisplay(tr) {
         const d = tr.dataset;
         tr.querySelector('.cell-room').textContent = d.room || '—';
         tr.querySelector('.cell-height').textContent = d.height || '—';
         tr.querySelector('.cell-width').textContent = d.width || '—';
         tr.querySelector('.cell-qty').textContent = d.qty || '1';
-        tr.querySelector('.cell-coating').textContent = COATING_LABELS[d.coating] || 'Матовая эмаль';
+        tr.querySelector('.cell-coating').textContent = buildCoatingSummary(d);
+    }
+
+    function updateBaseInfo() {
+        const material = document.getElementById('rm-material').value;
+        document.getElementById('rm-base-info').textContent = getBaseLabel(material);
+        // Toggle thickness visibility
+        document.getElementById('rm-thickness-wrap').style.display = material === 'mdf' ? '' : 'none';
+        // Toggle lac visibility (шпон не имеет отдельного лака)
+        document.getElementById('rm-lac-wrap').style.display = material === 'veneer' ? 'none' : '';
+        // For шпон — скрываем селект варианта патины (единая опция)
+        const patinaChecked = document.getElementById('rm-patina').checked;
+        document.getElementById('rm-patina-variant-wrap').style.display =
+            (patinaChecked && material !== 'veneer') ? '' : 'none';
     }
 
     // --- Modal open/close ---
@@ -176,7 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('row-modal-num').textContent = '№' + idx;
 
         document.getElementById('rm-room').value = d.room;
-        document.getElementById('rm-thickness').value = d.thickness;
+        document.getElementById('rm-material').value = d.material || 'mdf';
+        document.getElementById('rm-thickness').value = d.thickness || '16';
+        document.getElementById('rm-fres').value = d.fres || 'straight';
         document.getElementById('rm-height').value = d.height;
         document.getElementById('rm-width').value = d.width;
         document.getElementById('rm-qty').value = d.qty || '1';
@@ -184,8 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-frez-comment').value = d.frezComment;
         document.getElementById('rm-color-sample').value = d.colorSample;
         document.getElementById('rm-color-comment').value = d.colorComment;
-        document.getElementById('rm-coating').value = d.coating;
-        document.getElementById('rm-painting').value = d.painting;
+        document.getElementById('rm-gloss').checked = d.gloss === 'true';
+        document.getElementById('rm-patina').checked = d.patina === 'true';
+        document.getElementById('rm-patina-variant').value = d.patinaVariant || 'simple';
+        document.getElementById('rm-lac').checked = d.lac === 'true';
         document.getElementById('rm-cnc').value = d.cnc;
         document.getElementById('rm-prisadka').checked = d.prisadka === 'true';
         document.getElementById('rm-holes').value = d.holes;
@@ -200,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-color2-sample-wrap').style.display = showCombined;
         document.getElementById('rm-color2-sample-field').style.display = showCombined;
         document.getElementById('rm-color2-comment-field').style.display = showCombined;
-        document.getElementById('rm-gloss').checked = d.gloss === 'true';
+        updateBaseInfo();
 
         rowModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -222,7 +322,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!editingRow) return;
         const d = editingRow.dataset;
         d.room = document.getElementById('rm-room').value;
+        d.material = document.getElementById('rm-material').value;
         d.thickness = document.getElementById('rm-thickness').value;
+        d.fres = document.getElementById('rm-fres').value;
         d.height = document.getElementById('rm-height').value;
         d.width = document.getElementById('rm-width').value;
         d.qty = document.getElementById('rm-qty').value || '1';
@@ -230,10 +332,11 @@ document.addEventListener('DOMContentLoaded', () => {
         d.frezComment = document.getElementById('rm-frez-comment').value;
         d.colorSample = document.getElementById('rm-color-sample').value;
         d.colorComment = document.getElementById('rm-color-comment').value;
-        const coatingEl = document.getElementById('rm-coating');
-        d.coating = coatingEl.value;
-        d.coatingPrice = coatingEl.options[coatingEl.selectedIndex].dataset.price;
-        d.painting = document.getElementById('rm-painting').value;
+        d.gloss = document.getElementById('rm-gloss').checked ? 'true' : 'false';
+        d.patina = document.getElementById('rm-patina').checked ? 'true' : 'false';
+        d.patinaVariant = document.getElementById('rm-patina-variant').value;
+        d.lac = document.getElementById('rm-lac').checked ? 'true' : 'false';
+        if (d.material === 'veneer') d.lac = 'false';
         d.cnc = document.getElementById('rm-cnc').value;
         d.prisadka = document.getElementById('rm-prisadka').checked ? 'true' : 'false';
         d.holesDrawing = document.getElementById('rm-holes-drawing').checked ? 'true' : 'false';
@@ -241,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
         d.combined = document.getElementById('rm-combined').checked ? 'true' : 'false';
         d.color2Sample = d.combined === 'true' ? document.getElementById('rm-color2-sample').value : '';
         d.color2Comment = d.combined === 'true' ? document.getElementById('rm-color2-comment').value : '';
-        d.gloss = document.getElementById('rm-gloss').checked ? 'true' : 'false';
 
         updateRowDisplay(editingRow);
         recalcAll();
@@ -271,9 +373,32 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-color2-sample-field').style.display = show;
         document.getElementById('rm-color2-comment-field').style.display = show;
     });
+    document.getElementById('rm-material').addEventListener('change', updateBaseInfo);
+    document.getElementById('rm-thickness').addEventListener('change', updateBaseInfo);
+    document.getElementById('rm-fres').addEventListener('change', updateBaseInfo);
+    document.getElementById('rm-patina').addEventListener('change', updateBaseInfo);
     document.getElementById('rm-save').addEventListener('click', saveRowModal);
 
     // --- Calculations ---
+    function calcRowCost(d) {
+        const h = parseFloat(d.height) || 0;
+        const w = parseFloat(d.width) || 0;
+        const qty = parseInt(d.qty) || 0;
+        const thickness = parseInt(d.thickness) || 16;
+        const sqm = (h * w * qty) / 1000000;
+        const base = getBasePrice(d.material || 'mdf', thickness, d.fres || 'straight');
+        const surch = getSurcharge(d.material || 'mdf', {
+            gloss: d.gloss === 'true',
+            patina: d.patina === 'true',
+            patinaVariant: d.patinaVariant || 'simple',
+            lac: d.lac === 'true',
+        });
+        const holes = parseInt(d.holes) || 0;
+        const holesCost = (d.prisadka === 'true' && d.holesDrawing !== 'true') ? holes * HOLE_PRICE : 0;
+        const cost = sqm * (base + surch) + holesCost;
+        return { sqm, qty, cost, base, surch, holesCost };
+    }
+
     function recalcAll() {
         let totalQty = 0;
         let totalSqm = 0;
@@ -281,15 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         calcTbody.querySelectorAll('tr').forEach(tr => {
             const d = tr.dataset;
-            const h = parseFloat(d.height) || 0;
-            const w = parseFloat(d.width) || 0;
-            const qty = parseInt(d.qty) || 0;
-            const hasPrimer = d.prisadka === 'true';
-            const pricePerM2 = parseInt(d.coatingPrice) || COATING_PRICES[d.coating] || 18000;
-
-            const sqm = (h * w * qty) / 1000000;
-            const unitPrice = pricePerM2 + (hasPrimer ? PRIMER_PRICE : 0);
-            const cost = sqm * unitPrice;
+            const { sqm, qty, cost } = calcRowCost(d);
 
             tr.querySelector('.cell-sqm').textContent = sqm > 0 ? sqm.toFixed(3) : '—';
             tr.querySelector('.cell-cost').textContent = cost > 0 ? formatPrice(Math.round(cost)) : '—';
@@ -310,7 +427,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const rows = [];
         calcTbody.querySelectorAll('tr').forEach((tr, i) => {
             const d = tr.dataset;
-            // Пропускаем пустые строки (нет размеров)
             if (!d.height && !d.width) return;
 
             const sqm = tr.querySelector('.cell-sqm').textContent;
@@ -318,12 +434,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const parts = [];
             if (d.room) parts.push(d.room);
             parts.push(`${d.height}×${d.width}мм ×${d.qty || 1}шт = ${sqm}м²`);
-            parts.push(COATING_LABELS[d.coating] || 'Матовая эмаль');
+            parts.push(buildCoatingSummary(d));
             if (d.colorSample) parts.push(`цвет: ${d.colorSample}`);
             if (d.colorComment) parts.push(`(${d.colorComment})`);
             if (d.frezSample) parts.push(`фрезеровка: ${d.frezSample}`);
             if (d.frezComment) parts.push(`(${d.frezComment})`);
-            if (d.painting) parts.push(`покраска: ${PAINTING_LABELS[d.painting]}`);
             if (d.cnc) parts.push(`ЧПУ: ${CNC_LABELS[d.cnc]}`);
             if (d.combined === 'true') {
                 let c2 = 'цвет 2: ' + (d.color2Sample || '—');
@@ -331,7 +446,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 parts.push(c2);
             }
             if (d.prisadka === 'true') parts.push(`присадка: ${d.holes || '—'} отв.`);
-            if (d.gloss === 'true') parts.push('глянец: да');
             parts.push(cost);
             rows.push(`${rows.length + 1}. ${parts.join(', ')}`);
         });
@@ -365,26 +479,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const h = parseFloat(d.height) || 0;
             const w = parseFloat(d.width) || 0;
             const qty = parseInt(d.qty) || 1;
-            const sqm = (h * w * qty) / 1000000;
-            const pricePerM2 = parseInt(d.coatingPrice) || COATING_PRICES[d.coating] || 18000;
-            const hasPrimer = d.prisadka === 'true';
-            const cost = sqm * (pricePerM2 + (hasPrimer ? PRIMER_PRICE : 0));
+            const { sqm, cost } = calcRowCost(d);
             rows.push({
                 room: d.room || '',
                 height: h, width: w, qty: qty,
-                coating: d.coating,
+                material: d.material || 'mdf',
+                thickness: parseInt(d.thickness) || 16,
+                fres: d.fres || 'straight',
+                gloss: d.gloss === 'true',
+                patina: d.patina === 'true',
+                patinaVariant: d.patinaVariant || 'simple',
+                lac: d.lac === 'true',
+                coatingSummary: buildCoatingSummary(d),
                 colorSample: d.colorSample || '',
                 colorComment: d.colorComment || '',
                 frezSample: d.frezSample || '',
                 frezComment: d.frezComment || '',
-                painting: d.painting || '',
                 cnc: d.cnc || '',
                 combined: d.combined === 'true',
                 color2Sample: d.color2Sample || '',
                 color2Comment: d.color2Comment || '',
                 prisadka: d.prisadka === 'true',
                 holes: d.holes || '',
-                gloss: d.gloss === 'true',
+                holesDrawing: d.holesDrawing === 'true',
                 sqm: Math.round(sqm * 1000) / 1000,
                 cost: Math.round(cost)
             });
@@ -400,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const parts = [];
             if (r.room) parts.push(r.room);
             parts.push(`${r.height}\u00d7${r.width}мм \u00d7${r.qty}шт = ${r.sqm}м\u00b2`);
-            parts.push(COATING_LABELS[r.coating] || 'Матовая эмаль');
+            parts.push(r.coatingSummary);
             if (r.colorSample) parts.push('цвет: ' + r.colorSample);
             if (r.frezSample) parts.push('фрезеровка: ' + r.frezSample);
             parts.push(formatPrice(r.cost));
@@ -425,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalSqm = parseFloat(document.getElementById('total-sqm').textContent) || 0;
         if (totalSqm < 2) {
             e.preventDefault();
-            showNotification('Извините, не достигнут минимальный порог. Общая квадратура заказа не должна составлять менее 2 кв.м.', 'error');
+            showAlertModal('Минимальный заказ не достигнут', 'Общая квадратура заказа не должна составлять менее 2 кв.м. Добавьте ещё фасады или увеличьте размеры.');
         } else {
             sendToCRM();
         }
@@ -650,6 +767,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // ===== ALERT MODAL =====
+    const alertModal = document.getElementById('alert-modal');
+    function showAlertModal(title, text) {
+        document.getElementById('alert-modal-title').textContent = title;
+        document.getElementById('alert-modal-text').textContent = text;
+        alertModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => alertModal.classList.add('visible'));
+        });
+    }
+    function closeAlertModal() {
+        alertModal.classList.remove('visible');
+        setTimeout(() => {
+            alertModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }, 300);
+    }
+    document.getElementById('alert-modal-close').addEventListener('click', closeAlertModal);
+    document.getElementById('alert-modal-ok').addEventListener('click', closeAlertModal);
+    alertModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAlertModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && alertModal.classList.contains('active')) closeAlertModal(); });
+    window.showAlertModal = showAlertModal;
 
     // ===== NOTIFICATION (replaces alert) =====
     window.showNotification = function(text, type) {
