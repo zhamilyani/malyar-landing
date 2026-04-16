@@ -587,7 +587,7 @@
         <div class="alert-modal__icon">!</div>
         <h3 class="alert-modal__title" id="alert-modal-title">Минимальный заказ не достигнут</h3>
         <p class="alert-modal__text" id="alert-modal-text">Общая квадратура заказа не должна составлять менее 2 кв.м.</p>
-        <button class="btn btn--primary alert-modal__ok" id="alert-modal-ok">Понятно</button>
+        <button class="btn btn--primary alert-modal__ok" id="alert-modal-ok" data-ru="Понятно" data-kz="Түсінікті">Понятно</button>
     </div>
 </div>
 
@@ -595,26 +595,26 @@
 <div class="calc-modal-overlay" id="row-modal">
     <div class="calc-modal">
         <button class="calc-modal__close" id="row-modal-close" aria-label="Закрыть">&times;</button>
-        <h2 class="calc-modal__title">Параметры фасада <span id="row-modal-num"></span></h2>
+        <h2 class="calc-modal__title"><span data-ru="Параметры фасада" data-kz="Фасад параметрлері">Параметры фасада</span> <span id="row-modal-num"></span></h2>
         <div class="row-modal__form" id="row-modal-form">
             <div class="row-modal__grid">
                 <!-- Строка 1: Помещение -->
                 <div class="calc__field calc__field--full">
-                    <label>Помещение</label>
+                    <label data-ru="Помещение" data-kz="Бөлме">Помещение</label>
                     <input type="text" id="rm-room" placeholder="Укажите помещение. Если в одном помещении разные материалы — добавьте комментарий, напр.: Кухня — верхние фасады">
                 </div>
 
                 <!-- Строка 2: Материал, толщина, фреза -->
                 <div class="calc__field calc__field--row-start">
-                    <label>Материал</label>
+                    <label data-ru="Материал" data-kz="Материал">Материал</label>
                     <select id="rm-material">
-                        <option value="mdf" selected>МДФ</option>
-                        <option value="veneer">Шпон</option>
-                        <option value="ready">Готовые фасады</option>
+                        <option value="mdf" selected data-ru="МДФ" data-kz="МДФ">МДФ</option>
+                        <option value="veneer" data-ru="Шпон" data-kz="Шпон">Шпон</option>
+                        <option value="ready" data-ru="Готовые фасады" data-kz="Дайын фасадтар">Готовые фасады</option>
                     </select>
                 </div>
                 <div class="calc__field" id="rm-thickness-wrap">
-                    <label>МДФ толщина (мм)</label>
+                    <label data-ru="МДФ толщина (мм)" data-kz="МДФ қалыңдығы (мм)">МДФ толщина (мм)</label>
                     <select id="rm-thickness">
                         <option value="8">8</option>
                         <option value="10">10</option>
@@ -625,30 +625,30 @@
                     </select>
                 </div>
                 <div class="calc__field">
-                    <label>Тип фрезы</label>
+                    <label data-ru="Тип фрезы" data-kz="Фреза түрі">Тип фрезы</label>
                     <select id="rm-fres">
-                        <option value="straight" selected>Прямые</option>
-                        <option value="milled">Фрезерованные</option>
+                        <option value="straight" selected data-ru="Прямые" data-kz="Тік">Прямые</option>
+                        <option value="milled" data-ru="Фрезерованные" data-kz="Фрезерленген">Фрезерованные</option>
                     </select>
                 </div>
 
                 <!-- Строка 3: Размеры -->
                 <div class="calc__field calc__field--row-start">
-                    <label>Высота (мм)</label>
+                    <label data-ru="Высота (мм)" data-kz="Биіктігі (мм)">Высота (мм)</label>
                     <input type="number" id="rm-height" min="1" placeholder="716">
                 </div>
                 <div class="calc__field">
-                    <label>Ширина (мм)</label>
+                    <label data-ru="Ширина (мм)" data-kz="Ені (мм)">Ширина (мм)</label>
                     <input type="number" id="rm-width" min="1" placeholder="396">
                 </div>
                 <div class="calc__field">
-                    <label>Кол-во</label>
+                    <label data-ru="Кол-во" data-kz="Саны">Кол-во</label>
                     <input type="number" id="rm-qty" min="1" value="1">
                 </div>
 
                 <!-- Строка 4: Фрезеровка + Присадка -->
                 <div class="calc__field calc__field--row-start">
-                    <label>Фрезеровка — образец</label>
+                    <label data-ru="Фрезеровка — образец" data-kz="Фрезерлеу — үлгі">Фрезеровка — образец</label>
                     <div class="frez-sample-row">
                         <select id="rm-frez-sample">
                             <option value="">—</option>
@@ -665,81 +665,81 @@
                             <option value="11">11</option>
                             <option value="12">12</option>
                         </select>
-                        <button type="button" class="btn-samples" id="btn-show-samples">Посмотреть</button>
+                        <button type="button" class="btn-samples" id="btn-show-samples" data-ru="Посмотреть" data-kz="Қарау">Посмотреть</button>
                     </div>
                 </div>
                 <div class="calc__field">
-                    <label>Фрезеровка — комментарий</label>
+                    <label data-ru="Фрезеровка — комментарий" data-kz="Фрезерлеу — түсініктеме">Фрезеровка — комментарий</label>
                     <input type="text" id="rm-frez-comment" placeholder="—">
                 </div>
                 <div class="calc__field calc__field--checkbox">
-                    <label><input type="checkbox" id="rm-prisadka"> Присадка</label>
+                    <label><input type="checkbox" id="rm-prisadka"> <span data-ru="Присадка" data-kz="Тесік бұрғылау">Присадка</span></label>
                 </div>
                 <div class="calc__field calc__field--checkbox" id="rm-holes-wrap" style="display:none">
                     <div class="holes-row">
                         <input type="number" id="rm-holes" min="1" placeholder="Кол-во отверстий">
-                        <label class="holes-drawing"><input type="checkbox" id="rm-holes-drawing"> Согласно чертежа</label>
+                        <label class="holes-drawing"><input type="checkbox" id="rm-holes-drawing"> <span data-ru="Согласно чертежа" data-kz="Сызба бойынша">Согласно чертежа</span></label>
                     </div>
                 </div>
 
                 <!-- Строка 4: Базовое покрытие + Цвет + Комбинированный -->
                 <div class="calc__field calc__field--row-start">
-                    <label>Базовое покрытие</label>
+                    <label data-ru="Базовое покрытие" data-kz="Негізгі жабын">Базовое покрытие</label>
                     <div id="rm-base-info" class="calc__base-info">Матовая эмаль</div>
                 </div>
                 <div class="calc__field">
-                    <label>Цвет — RAL/NCS/VM</label>
+                    <label data-ru="Цвет — RAL/NCS/VM" data-kz="Түс — RAL/NCS/VM">Цвет — RAL/NCS/VM</label>
                     <input type="text" id="rm-color-sample" placeholder="RAL 9003, NCS S0500-N, VM...">
                 </div>
                 <div class="calc__field">
-                    <label>Цвет — комментарий</label>
+                    <label data-ru="Цвет — комментарий" data-kz="Түс — түсініктеме">Цвет — комментарий</label>
                     <input type="text" id="rm-color-comment" placeholder="—">
                 </div>
                 <div class="calc__field calc__field--checkbox">
-                    <label><input type="checkbox" id="rm-combined"> Комбинированный</label>
+                    <label><input type="checkbox" id="rm-combined"> <span data-ru="Комбинированный" data-kz="Аралас">Комбинированный</span></label>
                 </div>
                 <div class="calc__field calc__field--row-start" id="rm-color2-sample-wrap" style="display:none">
                     <label>&nbsp;</label>
                 </div>
                 <div class="calc__field" id="rm-color2-sample-field" style="display:none">
-                    <label>Цвет 2 — RAL/NCS/VM</label>
+                    <label data-ru="Цвет 2 — RAL/NCS/VM" data-kz="2-ші түс — RAL/NCS/VM">Цвет 2 — RAL/NCS/VM</label>
                     <input type="text" id="rm-color2-sample" placeholder="RAL 9005, NCS S0500-N, VM...">
                 </div>
                 <div class="calc__field" id="rm-color2-comment-field" style="display:none">
-                    <label>Цвет 2 — комментарий</label>
+                    <label data-ru="Цвет 2 — комментарий" data-kz="2-ші түс — түсініктеме">Цвет 2 — комментарий</label>
                     <input type="text" id="rm-color2-comment" placeholder="—">
                 </div>
 
                 <!-- Строка 5: Доплаты (глянец/патина/лак) -->
                 <div class="calc__field calc__field--row-start calc__field--checkbox">
-                    <label><input type="checkbox" id="rm-gloss"> Глянец</label>
+                    <label><input type="checkbox" id="rm-gloss"> <span data-ru="Глянец" data-kz="Глянец">Глянец</span></label>
                 </div>
                 <div class="calc__field calc__field--checkbox">
-                    <label><input type="checkbox" id="rm-patina"> Патина</label>
+                    <label><input type="checkbox" id="rm-patina"> <span data-ru="Патина" data-kz="Патина">Патина</span></label>
                 </div>
                 <div class="calc__field" id="rm-patina-variant-wrap" style="display:none">
-                    <label>Вариант патины</label>
+                    <label data-ru="Вариант патины" data-kz="Патина нұсқасы">Вариант патины</label>
                     <select id="rm-patina-variant">
-                        <option value="simple">Простое патинирование</option>
-                        <option value="gloss50">Патина + глянец 50%</option>
-                        <option value="gloss100">Патина + глянец 100%</option>
+                        <option value="simple" data-ru="Простое патинирование" data-kz="Қарапайым патиналау">Простое патинирование</option>
+                        <option value="gloss50" data-ru="Патина + глянец 50%" data-kz="Патина + глянец 50%">Патина + глянец 50%</option>
+                        <option value="gloss100" data-ru="Патина + глянец 100%" data-kz="Патина + глянец 100%">Патина + глянец 100%</option>
                     </select>
                 </div>
                 <div class="calc__field calc__field--checkbox" id="rm-lac-wrap">
-                    <label><input type="checkbox" id="rm-lac"> Лак</label>
+                    <label><input type="checkbox" id="rm-lac"> <span data-ru="Лак" data-kz="Лак">Лак</span></label>
                 </div>
 
                 <!-- Строка 6: ЧПУ -->
                 <div class="calc__field calc__field--row-start">
-                    <label>Услуги ЧПУ</label>
+                    <label data-ru="Услуги ЧПУ" data-kz="ЧПУ қызметтері">Услуги ЧПУ</label>
                     <select id="rm-cnc">
-                        <option value="">— Не требуется —</option>
-                        <option value="our_mdf">С нашим МДФ</option>
-                        <option value="your_mdf">С вашим МДФ</option>
+                        <option value="" data-ru="— Не требуется —" data-kz="— Қажет емес —">— Не требуется —</option>
+                        <option value="our_mdf" data-ru="С нашим МДФ" data-kz="Біздің МДФ-пен">С нашим МДФ</option>
+                        <option value="your_mdf" data-ru="С вашим МДФ" data-kz="Сіздің МДФ-пен">С вашим МДФ</option>
                     </select>
                 </div>
             </div>
-            <button class="btn btn--primary row-modal__save" id="rm-save">Сохранить</button>
+            <button class="btn btn--primary row-modal__save" id="rm-save" data-ru="Сохранить" data-kz="Сақтау">Сохранить</button>
         </div>
     </div>
 </div>
@@ -937,20 +937,27 @@
 <!-- FOOTER -->
 <footer class="footer">
     <div class="container footer__inner">
-        <div class="footer__logo">
-            <div class="logo-glass">
-                <img src="images/logo.png" alt="malyarkapro.kz" style="height:32px;width:auto;">
-                <span class="logo-text">malyarka<span class="logo-accent">pro.kz</span></span>
+        <div class="footer__left">
+            <div class="footer__logo">
+                <div class="logo-glass">
+                    <img src="images/logo.png" alt="malyarkapro.kz" style="height:32px;width:auto;">
+                    <span class="logo-text">malyarka<span class="logo-accent">pro.kz</span></span>
+                </div>
             </div>
+            <p class="footer__copy" data-ru="&copy; 2026 malyarkapro.kz — покрасочный цех мебельных фасадов МДФ и шпона в Алматы. Покраска фасадов итальянскими ЛКМ Milesi с гарантией 2 года." data-kz="&copy; 2026 malyarkapro.kz — Алматыдағы МДФ және шпон жиһаз фасадтарының бояу цехы. Milesi бояу материалдарымен 2 жыл кепілдікпен.">&copy; 2026 malyarkapro.kz — покрасочный цех мебельных фасадов МДФ и шпона в Алматы. Покраска фасадов итальянскими ЛКМ Milesi с гарантией 2 года.</p>
         </div>
-        <p class="footer__copy" data-ru="&copy; 2026 malyarkapro.kz — покрасочный цех мебельных фасадов МДФ и шпона в Алматы. Покраска фасадов итальянскими ЛКМ Milesi с гарантией 2 года." data-kz="&copy; 2026 malyarkapro.kz — Алматыдағы МДФ және шпон жиһаз фасадтарының бояу цехы. Итальяндық Milesi бояу материалдарымен фасадтарды бояу, 2 жыл кепілдікпен.">&copy; 2026 malyarkapro.kz — покрасочный цех мебельных фасадов МДФ и шпона в Алматы. Покраска фасадов итальянскими ЛКМ Milesi с гарантией 2 года.</p>
-        <div class="footer__links">
-            <a href="/uslugi/" data-ru="Услуги" data-kz="Қызметтер">Услуги</a>
-            <a href="/kalkulyator/" data-ru="Калькулятор" data-kz="Калькулятор">Калькулятор</a>
-            <a href="/kontakty/" data-ru="Контакты" data-kz="Байланыс">Контакты</a>
-            <a href="/blog/" data-ru="Блог" data-kz="Блог">Блог</a>
-            <a href="warranty.html" data-ru="Гарантия" data-kz="Кепілдік">Гарантия</a>
-            <a href="privacy.html" data-ru="Конфиденциальность" data-kz="Құпиялылық">Конфиденциальность</a>
+        <div>
+            <div class="footer__nav-title" data-ru="Навигация" data-kz="Навигация">Навигация</div>
+            <div class="footer__links">
+                <a href="/uslugi/" data-ru="Услуги" data-kz="Қызметтер">Услуги</a>
+                <a href="/preimushhestva/" data-ru="Преимущества" data-kz="Артықшылықтар">Преимущества</a>
+                <a href="/portfolio/" data-ru="Портфолио" data-kz="Портфолио">Портфолио</a>
+                <a href="/kalkulyator/" data-ru="Калькулятор" data-kz="Калькулятор">Калькулятор</a>
+                <a href="/kontakty/" data-ru="Контакты" data-kz="Байланыс">Контакты</a>
+                <a href="/blog/" data-ru="Блог" data-kz="Блог">Блог</a>
+                <a href="warranty.html" data-ru="Гарантия" data-kz="Кепілдік">Гарантия</a>
+                <a href="privacy.html" data-ru="Конфиденциальность" data-kz="Құпиялылық">Конфиденциальность</a>
+            </div>
         </div>
     </div>
 </footer>
@@ -965,8 +972,8 @@
     <div class="samples-modal__backdrop"></div>
     <div class="samples-modal__inner">
         <button class="samples-modal__close" aria-label="Закрыть">&times;</button>
-        <h3 class="samples-modal__title">Образцы фрезеровки</h3>
-        <p class="samples-modal__hint">Наведите на фото для увеличения</p>
+        <h3 class="samples-modal__title" data-ru="Образцы фрезеровки" data-kz="Фрезерлеу үлгілері">Образцы фрезеровки</h3>
+        <p class="samples-modal__hint" data-ru="Наведите на фото для увеличения" data-kz="Үлкейту үшін фотоға басыңыз">Наведите на фото для увеличения</p>
         <div class="samples-modal__grid">
             <div class="sample-thumb" data-num="1"><img src="images/samples/IMG_20260313_111556.jpg" alt="Образец 1" loading="lazy"><span>1</span></div>
             <div class="sample-thumb" data-num="2"><img src="images/samples/IMG_20260313_111617.jpg" alt="Образец 2" loading="lazy"><span>2</span></div>
@@ -988,7 +995,7 @@
             <img id="samples-preview-img" src="" alt="">
             <span class="samples-modal__preview-num" id="samples-preview-num"></span>
             <span class="samples-modal__preview-counter" id="samples-preview-counter"></span>
-            <button type="button" class="btn btn--primary samples-preview__select" id="samples-preview-select">Выбрать этот образец</button>
+            <button type="button" class="btn btn--primary samples-preview__select" id="samples-preview-select" data-ru="Выбрать этот образец" data-kz="Осы үлгіні таңдау">Выбрать этот образец</button>
         </div>
     </div>
 </div>
