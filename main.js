@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== CONTACT FORM =====
     const contactForm = document.getElementById('contact-form');
 
-    contactForm.addEventListener('submit', (e) => {
+    if (contactForm) contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const name = document.getElementById('form-name').value.trim();
@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const samplesPreviewImg = document.getElementById('samples-preview-img');
     const samplesPreviewNum = document.getElementById('samples-preview-num');
     const samplesPreviewCounter = document.getElementById('samples-preview-counter');
-    const sampleThumbs = Array.from(samplesModal.querySelectorAll('.sample-thumb'));
+    const sampleThumbs = samplesModal ? Array.from(samplesModal.querySelectorAll('.sample-thumb')) : [];
     let currentSampleIdx = 0;
 
     function showSamplePreview(idx) {
@@ -698,68 +698,72 @@ document.addEventListener('DOMContentLoaded', () => {
         samplesPreview.classList.remove('active');
     }
 
-    document.getElementById('btn-show-samples').addEventListener('click', () => {
+    const btnShowSamples = document.getElementById('btn-show-samples');
+    if (btnShowSamples) btnShowSamples.addEventListener('click', () => {
         samplesModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
 
     function closeSamplesModal() {
+        if (!samplesModal) return;
         samplesModal.classList.remove('active');
         closeSamplePreview();
         document.body.style.overflow = '';
     }
 
-    samplesModal.querySelector('.samples-modal__close').addEventListener('click', closeSamplesModal);
-    samplesModal.querySelector('.samples-modal__backdrop').addEventListener('click', closeSamplesModal);
+    if (samplesModal) {
+        samplesModal.querySelector('.samples-modal__close').addEventListener('click', closeSamplesModal);
+        samplesModal.querySelector('.samples-modal__backdrop').addEventListener('click', closeSamplesModal);
 
-    // Preview arrows
-    samplesPreview.querySelector('.samples-preview__arrow--next').addEventListener('click', (e) => { e.stopPropagation(); nextSample(); });
-    samplesPreview.querySelector('.samples-preview__arrow--prev').addEventListener('click', (e) => { e.stopPropagation(); prevSample(); });
-    samplesPreview.querySelector('.samples-preview__close').addEventListener('click', (e) => { e.stopPropagation(); closeSamplePreview(); });
+        // Preview arrows
+        samplesPreview.querySelector('.samples-preview__arrow--next').addEventListener('click', (e) => { e.stopPropagation(); nextSample(); });
+        samplesPreview.querySelector('.samples-preview__arrow--prev').addEventListener('click', (e) => { e.stopPropagation(); prevSample(); });
+        samplesPreview.querySelector('.samples-preview__close').addEventListener('click', (e) => { e.stopPropagation(); closeSamplePreview(); });
 
-    // Keyboard
-    document.addEventListener('keydown', (e) => {
-        if (!samplesModal.classList.contains('active')) return;
-        if (e.key === 'Escape') {
-            if (samplesPreview.classList.contains('active')) {
-                closeSamplePreview();
-            } else {
-                closeSamplesModal();
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (!samplesModal.classList.contains('active')) return;
+            if (e.key === 'Escape') {
+                if (samplesPreview.classList.contains('active')) {
+                    closeSamplePreview();
+                } else {
+                    closeSamplesModal();
+                }
             }
-        }
-        if (samplesPreview.classList.contains('active')) {
-            if (e.key === 'ArrowRight') nextSample();
-            if (e.key === 'ArrowLeft') prevSample();
-        }
-    });
-
-    // Click/tap on thumbnail → open preview carousel
-    sampleThumbs.forEach((thumb, idx) => {
-        thumb.addEventListener('click', () => {
-            showSamplePreview(idx);
+            if (samplesPreview.classList.contains('active')) {
+                if (e.key === 'ArrowRight') nextSample();
+                if (e.key === 'ArrowLeft') prevSample();
+            }
         });
-    });
 
-    // Select button in preview
-    document.getElementById('samples-preview-select').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const num = sampleThumbs[currentSampleIdx].dataset.num;
-        document.getElementById('rm-frez-sample').value = num;
-        closeSamplesModal();
-        showNotification('Выбран образец ' + num, 'info');
-    });
+        // Click/tap on thumbnail → open preview carousel
+        sampleThumbs.forEach((thumb, idx) => {
+            thumb.addEventListener('click', () => {
+                showSamplePreview(idx);
+            });
+        });
 
-    // Swipe on preview (mobile)
-    let sampleTouchX = 0;
-    samplesPreview.addEventListener('touchstart', (e) => {
-        sampleTouchX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    samplesPreview.addEventListener('touchend', (e) => {
-        const diff = e.changedTouches[0].screenX - sampleTouchX;
-        if (Math.abs(diff) > 50) {
-            diff < 0 ? nextSample() : prevSample();
-        }
-    }, { passive: true });
+        // Select button in preview
+        document.getElementById('samples-preview-select').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const num = sampleThumbs[currentSampleIdx].dataset.num;
+            document.getElementById('rm-frez-sample').value = num;
+            closeSamplesModal();
+            showNotification('Выбран образец ' + num, 'info');
+        });
+
+        // Swipe on preview (mobile)
+        let sampleTouchX = 0;
+        samplesPreview.addEventListener('touchstart', (e) => {
+            sampleTouchX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        samplesPreview.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].screenX - sampleTouchX;
+            if (Math.abs(diff) > 50) {
+                diff < 0 ? nextSample() : prevSample();
+            }
+        }, { passive: true });
+    }
 
     // ===== SMOOTH SCROLL for anchor links =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -793,10 +797,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = '';
         }, 300);
     }
-    document.getElementById('alert-modal-close').addEventListener('click', closeAlertModal);
-    document.getElementById('alert-modal-ok').addEventListener('click', closeAlertModal);
-    alertModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAlertModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && alertModal.classList.contains('active')) closeAlertModal(); });
+    if (alertModal) {
+        document.getElementById('alert-modal-close').addEventListener('click', closeAlertModal);
+        document.getElementById('alert-modal-ok').addEventListener('click', closeAlertModal);
+        alertModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAlertModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && alertModal.classList.contains('active')) closeAlertModal(); });
+    }
     window.showAlertModal = showAlertModal;
 
     // ===== NOTIFICATION (replaces alert) =====
