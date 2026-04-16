@@ -47,7 +47,7 @@
     function applyLang(lang) {
         document.querySelectorAll('[data-ru]').forEach(el => {
             const text = lang === 'kz' ? (el.getAttribute('data-kz') || el.getAttribute('data-ru')) : el.getAttribute('data-ru');
-            if (el.tagName === 'INPUT' && el.type !== 'checkbox') {
+            if ((el.tagName === 'INPUT' && el.type !== 'checkbox') || el.tagName === 'TEXTAREA') {
                 if (el.placeholder) el.placeholder = text;
             } else if (el.tagName === 'OPTION') {
                 el.textContent = text;
