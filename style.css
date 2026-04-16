@@ -2213,6 +2213,25 @@ img {
     }
 }
 
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    padding: 90px 0 0;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.breadcrumb a {
+    color: var(--gold);
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb span {
+    margin: 0 6px;
+}
+
 /* Select option styling for dark theme */
 select option {
     background: var(--bg-card);
