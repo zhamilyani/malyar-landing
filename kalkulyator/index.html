@@ -44,14 +44,14 @@
     }
     </script>
 
-    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png?v=20260416">
-    <link rel="icon" type="image/png" sizes="48x48" href="../favicon-48.png?v=20260416">
-    <link rel="apple-touch-icon" sizes="180x180" href="../favicon-180.png?v=20260416">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png?v=20260417">
+    <link rel="icon" type="image/png" sizes="48x48" href="../favicon-48.png?v=20260417">
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicon-180.png?v=20260417">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=20260416">
+    <link rel="stylesheet" href="../style.css?v=20260417">
 </head>
 <body>
 
@@ -158,7 +158,7 @@
 <div class="calc-modal-overlay" id="row-modal">
     <div class="calc-modal">
         <button class="calc-modal__close" id="row-modal-close" aria-label="Закрыть">&times;</button>
-        <h2 class="calc-modal__title" data-ru="Параметры фасада" data-kz="Фасад параметрлері">Параметры фасада <span id="row-modal-num"></span></h2>
+        <h2 class="calc-modal__title"><span data-ru="Параметры фасада" data-kz="Фасад параметрлері">Параметры фасада</span> <span id="row-modal-num"></span></h2>
         <div class="row-modal__form" id="row-modal-form">
             <div class="row-modal__grid">
                 <!-- Строка 1: Помещение -->
@@ -401,11 +401,13 @@ const GALLERY_DATA = {
 };
 </script>
 
-<script src="../shared.js?v=20260416"></script>
-<script src="../main.js?v=20260416"></script>
+<script src="../shared.js?v=20260417"></script>
+<script src="../main.js?v=20260417b"></script>
 <script>
-initThemeToggle(document.getElementById('theme-toggle'));
-initLangToggle(document.getElementById('lang-toggle'));
+document.addEventListener('DOMContentLoaded', () => {
+    initThemeToggle(document.getElementById('theme-toggle'));
+    initLangToggle(document.getElementById('lang-toggle'));
+});
 </script>
 </body>
 </html>
