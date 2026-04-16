@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
+  <!-- Вариант 4: Максимально простой — точка-разделитель + жирный текст -->
+  <rect width="400" height="100" fill="#111"/>
+  <!-- Капля краски -->
+  <circle cx="30" cy="50" r="16" fill="#c9a84c"/>
+  <path d="M30,34 L24,50 L36,50 Z" fill="#c9a84c"/>
+  <!-- Текст -->
+  <text x="58" y="52" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#e8e8e8">malyarka</text>
+  <text x="290" y="52" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#c9a84c">pro</text>
+  <text x="340" y="52" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="400" fill="#c9a84c">.kz</text>
+  <!-- Подпись -->
+  <text x="58" y="75" font-family="Arial, sans-serif" font-size="12" fill="#666" letter-spacing="1.5">покраска мебельных фасадов</text>
+</svg>

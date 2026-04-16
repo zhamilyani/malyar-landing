@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
+  <!-- Вариант 1: Малярный валик + текст -->
+  <rect width="400" height="100" fill="#111"/>
+  <!-- Валик -->
+  <rect x="20" y="22" width="30" height="18" rx="4" fill="#c9a84c"/>
+  <rect x="50" y="28" width="12" height="6" fill="#888"/>
+  <rect x="58" y="28" width="4" height="40" rx="1" fill="#888"/>
+  <!-- Текст -->
+  <text x="80" y="48" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#e8e8e8" letter-spacing="1">malyarka</text>
+  <text x="282" y="48" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#c9a84c" letter-spacing="1">pro.kz</text>
+  <!-- Подпись -->
+  <text x="80" y="68" font-family="Arial, sans-serif" font-size="12" fill="#999" letter-spacing="2">ПОКРАСКА МЕБЕЛЬНЫХ ФАСАДОВ</text>
+</svg>

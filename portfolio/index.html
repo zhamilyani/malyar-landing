@@ -65,12 +65,16 @@
             </div>
         </a>
         <nav class="header__nav" id="nav">
-            <a href="/uslugi/" class="header__link">Услуги</a>
-            <a href="/preimushhestva/" class="header__link">Преимущества</a>
-            <a href="/portfolio/" class="header__link active">Портфолио</a>
-            <a href="/kalkulyator/" class="header__link">Калькулятор</a>
-            <a href="/kontakty/" class="header__link">Контакты</a>
+            <a href="/uslugi/" class="header__link" data-ru="Услуги" data-kz="Қызметтер">Услуги</a>
+            <a href="/preimushhestva/" class="header__link" data-ru="Преимущества" data-kz="Артықшылықтар">Преимущества</a>
+            <a href="/portfolio/" class="header__link active" data-ru="Портфолио" data-kz="Портфолио">Портфолио</a>
+            <a href="/kalkulyator/" class="header__link" data-ru="Калькулятор" data-kz="Калькулятор">Калькулятор</a>
+            <a href="/kontakty/" class="header__link" data-ru="Контакты" data-kz="Байланыс">Контакты</a>
         </nav>
+        <div class="header__toggles">
+            <button class="toggle-btn" id="theme-toggle" aria-label="Тема"></button>
+            <button class="toggle-btn" id="lang-toggle" aria-label="Язык"></button>
+        </div>
         <a href="tel:+77074014040" class="header__phone">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             +7 707 401 40 40
@@ -85,9 +89,9 @@
 <nav class="breadcrumb" style="padding-top: 100px; padding-bottom: 0;">
     <div class="container">
         <ul style="list-style:none;display:flex;gap:8px;padding:0;margin:0;font-size:14px;color:var(--text-muted);">
-            <li><a href="/" style="color:var(--accent);text-decoration:none;">Главная</a></li>
+            <li><a href="/" style="color:var(--accent);text-decoration:none;" data-ru="Главная" data-kz="Басты бет">Главная</a></li>
             <li style="color:var(--text-muted);">/</li>
-            <li>Портфолио</li>
+            <li data-ru="Портфолио" data-kz="Портфолио">Портфолио</li>
         </ul>
     </div>
 </nav>
@@ -95,8 +99,8 @@
 <!-- PORTFOLIO -->
 <section class="portfolio" id="portfolio" style="padding-top: 40px;">
     <div class="container">
-        <h2 class="section-title animate-up">Примеры покраски мебельных фасадов</h2>
-        <p class="section-subtitle animate-up">Портфолио выполненных заказов покраски МДФ и шпона для мебельных цехов Алматы</p>
+        <h2 class="section-title animate-up" data-ru="Примеры покраски мебельных фасадов" data-kz="Жиһаз фасадтарын бояу мысалдары">Примеры покраски мебельных фасадов</h2>
+        <p class="section-subtitle animate-up" data-ru="Портфолио выполненных заказов покраски МДФ и шпона для мебельных цехов Алматы" data-kz="Алматы жиһаз цехтары үшін МДФ және шпон бояу тапсырыстарының портфолиосы">Портфолио выполненных заказов покраски МДФ и шпона для мебельных цехов Алматы</p>
         <div class="portfolio__grid">
             <div class="portfolio-card animate-up portfolio-card--gallery" data-gallery="mdf">
                 <div class="portfolio-card__img">
@@ -107,7 +111,7 @@
                     </div>
                 </div>
                 <div class="portfolio-card__info">
-                    <h4>Покраска МДФ фасадов — матовый белый</h4>
+                    <h4 data-ru="Покраска МДФ фасадов — матовый белый" data-kz="МДФ фасадтарын бояу — матты ақ">Покраска МДФ фасадов — матовый белый</h4>
                     <p>Матовая эмаль Milesi · 5 дней · 28 м²</p>
                 </div>
             </div>
@@ -118,7 +122,7 @@
                     </div>
                 </div>
                 <div class="portfolio-card__info">
-                    <h4>Кухонные фасады высокий глянец</h4>
+                    <h4 data-ru="Кухонные фасады высокий глянец" data-kz="Ас үй фасадтары жоғары глянец">Кухонные фасады высокий глянец</h4>
                     <p>Полиэфирное глянцевое покрытие · 8 дней · 18 м²</p>
                 </div>
             </div>
@@ -131,7 +135,7 @@
                     </div>
                 </div>
                 <div class="portfolio-card__info">
-                    <h4>Тонировка шпона дуба + лак Milesi</h4>
+                    <h4 data-ru="Тонировка шпона дуба + лак Milesi" data-kz="Емен шпонын тондау + Milesi лагы">Тонировка шпона дуба + лак Milesi</h4>
                     <p>Тонировка и лакировка шпона · 4 дня · 15 м²</p>
                 </div>
             </div>
@@ -142,7 +146,7 @@
                     </div>
                 </div>
                 <div class="portfolio-card__info">
-                    <h4>Покраска фасадов с патиной золото</h4>
+                    <h4 data-ru="Покраска фасадов с патиной золото" data-kz="Алтын патинамен фасадтарды бояу">Покраска фасадов с патиной золото</h4>
                     <p>Патина золото на МДФ фасадах · 6 дней · 22 м²</p>
                 </div>
             </div>
@@ -153,7 +157,7 @@
                     </div>
                 </div>
                 <div class="portfolio-card__info">
-                    <h4>Перекраска старых кухонных фасадов</h4>
+                    <h4 data-ru="Перекраска старых кухонных фасадов" data-kz="Ескі ас үй фасадтарын қайта бояу">Перекраска старых кухонных фасадов</h4>
                     <p>Перекраска в матовую эмаль · 7 дней · 12 м²</p>
                 </div>
             </div>
@@ -166,7 +170,7 @@
     <div class="container">
         <h2 class="section-title animate-up">Хотите узнать стоимость покраски?</h2>
         <p class="section-subtitle animate-up">Рассчитайте стоимость онлайн за 2 минуты</p>
-        <a href="/kalkulyator/" class="btn btn--primary animate-up" style="margin-top: 20px;">Рассчитать стоимость покраски</a>
+        <a href="/kalkulyator/" class="btn btn--primary animate-up" style="margin-top: 20px;" data-ru="Рассчитать стоимость покраски" data-kz="Бояу құнын есептеу">Рассчитать стоимость покраски</a>
     </div>
 </section>
 
@@ -181,12 +185,12 @@
         </div>
         <p class="footer__copy">&copy; 2026 malyarkapro.kz — покрасочный цех мебельных фасадов МДФ и шпона в Алматы. Покраска фасадов итальянскими ЛКМ Milesi с гарантией 2 года.</p>
         <div class="footer__links">
-            <a href="/uslugi/">Услуги</a>
-            <a href="/portfolio/">Портфолио</a>
-            <a href="/kalkulyator/">Калькулятор</a>
-            <a href="/kontakty/">Контакты</a>
-            <a href="/warranty.html">Гарантия</a>
-            <a href="/privacy.html">Конфиденциальность</a>
+            <a href="/uslugi/" data-ru="Услуги" data-kz="Қызметтер">Услуги</a>
+            <a href="/portfolio/" data-ru="Портфолио" data-kz="Портфолио">Портфолио</a>
+            <a href="/kalkulyator/" data-ru="Калькулятор" data-kz="Калькулятор">Калькулятор</a>
+            <a href="/kontakty/" data-ru="Контакты" data-kz="Байланыс">Контакты</a>
+            <a href="/warranty.html" data-ru="Гарантия" data-kz="Кепілдік">Гарантия</a>
+            <a href="/privacy.html" data-ru="Конфиденциальность" data-kz="Құпиялылық">Конфиденциальность</a>
         </div>
     </div>
 </footer>
@@ -231,8 +235,11 @@ const GALLERY_DATA = {
 };
 </script>
 
+<script src="../shared.js?v=20260416"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    initThemeToggle(document.getElementById('theme-toggle'));
+    initLangToggle(document.getElementById('lang-toggle'));
 
     // ===== HEADER SCROLL =====
     const header = document.getElementById('header');

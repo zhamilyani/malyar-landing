@@ -102,12 +102,16 @@
             </div>
         </a>
         <nav class="header__nav" id="nav">
-            <a href="/uslugi/" class="header__link">Услуги</a>
-            <a href="/preimushhestva/" class="header__link">Преимущества</a>
-            <a href="/portfolio/" class="header__link">Портфолио</a>
-            <a href="/kalkulyator/" class="header__link">Калькулятор</a>
-            <a href="/kontakty/" class="header__link">Контакты</a>
+            <a href="/uslugi/" class="header__link" data-ru="Услуги" data-kz="Қызметтер">Услуги</a>
+            <a href="/preimushhestva/" class="header__link" data-ru="Преимущества" data-kz="Артықшылықтар">Преимущества</a>
+            <a href="/portfolio/" class="header__link" data-ru="Портфолио" data-kz="Портфолио">Портфолио</a>
+            <a href="/kalkulyator/" class="header__link" data-ru="Калькулятор" data-kz="Калькулятор">Калькулятор</a>
+            <a href="/kontakty/" class="header__link" data-ru="Контакты" data-kz="Байланыс">Контакты</a>
         </nav>
+        <div class="header__toggles">
+            <button class="toggle-btn" id="theme-toggle" aria-label="Тема"></button>
+            <button class="toggle-btn" id="lang-toggle" aria-label="Язык"></button>
+        </div>
         <a href="tel:+77074014040" class="header__phone">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             +7 707 401 40 40
@@ -121,7 +125,7 @@
 <!-- BREADCRUMB -->
 <div class="breadcrumb">
     <div class="container">
-        <a href="/">Главная</a><span>/</span><a href="/blog/">Блог</a><span>/</span>Как выбрать покрасочный цех
+        <a href="/" data-ru="Главная" data-kz="Басты бет">Главная</a><span>/</span><a href="/blog/" data-ru="Блог" data-kz="Блог">Блог</a><span>/</span>Как выбрать покрасочный цех
     </div>
 </div>
 
@@ -260,11 +264,11 @@
         </div>
         <p class="footer__copy">&copy; 2026 malyarkapro.kz — покрасочный цех мебельных фасадов МДФ и шпона в Алматы.</p>
         <div class="footer__links">
-            <a href="/uslugi/">Услуги</a>
-            <a href="/kalkulyator/">Калькулятор</a>
-            <a href="/kontakty/">Контакты</a>
-            <a href="/warranty.html">Гарантия</a>
-            <a href="/privacy.html">Конфиденциальность</a>
+            <a href="/uslugi/" data-ru="Услуги" data-kz="Қызметтер">Услуги</a>
+            <a href="/kalkulyator/" data-ru="Калькулятор" data-kz="Калькулятор">Калькулятор</a>
+            <a href="/kontakty/" data-ru="Контакты" data-kz="Байланыс">Контакты</a>
+            <a href="/warranty.html" data-ru="Гарантия" data-kz="Кепілдік">Гарантия</a>
+            <a href="/privacy.html" data-ru="Конфиденциальность" data-kz="Құпиялылық">Конфиденциальность</a>
         </div>
     </div>
 </footer>
@@ -275,6 +279,7 @@
 </a>
 
 <!-- SCRIPTS -->
+<script src="../../shared.js?v=20260416"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('header');
@@ -295,6 +300,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = '';
         });
     });
+
+    initThemeToggle(document.getElementById('theme-toggle'));
+    initLangToggle(document.getElementById('lang-toggle'));
 });
 </script>
 
