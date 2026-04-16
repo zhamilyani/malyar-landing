@@ -39,8 +39,9 @@
         .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .blog-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius); overflow: hidden; transition: all var(--transition); }
         .blog-card:hover { border-color: rgba(201,168,76,0.25); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
-        .blog-card__img { height: 180px; background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, rgba(17,17,17,0.9) 100%); display: flex; align-items: center; justify-content: center; }
-        .blog-card__icon { font-size: 48px; opacity: 0.6; }
+        .blog-card__img { height: 200px; position: relative; overflow: hidden; background: var(--bg-card); }
+        .blog-card__img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity var(--transition); }
+        .blog-card:hover .blog-card__img img { opacity: 0.7; }
         .blog-card__body { padding: 24px; }
         .blog-card__date { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
         .blog-card__title { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 600; color: var(--white); margin-bottom: 10px; line-height: 1.4; }
@@ -94,8 +95,8 @@
 
         <div class="blog-grid">
             <a href="/blog/skolko-stoit-pokraska-fasadov/" class="blog-card">
-                <div class="blog-card__img" style="background: linear-gradient(135deg, rgba(201,168,76,0.2) 0%, rgba(17,17,17,0.95) 100%);">
-                    <span class="blog-card__icon">&#8381;</span>
+                <div class="blog-card__img">
+                    <img src="/images/mdf/20240716_182932.jpg" alt="Стоимость покраски фасадов" loading="lazy">
                 </div>
                 <div class="blog-card__body">
                     <div class="blog-card__date" data-ru="16 апреля 2026" data-kz="2026 жылдың 16 сәуірі">16 апреля 2026</div>
@@ -106,8 +107,8 @@
             </a>
 
             <a href="/blog/matovaya-ili-glyantsevaya-pokraska/" class="blog-card">
-                <div class="blog-card__img" style="background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, rgba(17,17,17,0.95) 100%);">
-                    <span class="blog-card__icon">&#9681;</span>
+                <div class="blog-card__img">
+                    <img src="/images/mdf/20240710_110948.jpg" alt="Матовая или глянцевая покраска" loading="lazy">
                 </div>
                 <div class="blog-card__body">
                     <div class="blog-card__date" data-ru="16 апреля 2026" data-kz="2026 жылдың 16 сәуірі">16 апреля 2026</div>
@@ -118,8 +119,8 @@
             </a>
 
             <a href="/blog/kak-vybrat-pokrasochnyj-ceh/" class="blog-card">
-                <div class="blog-card__img" style="background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, rgba(17,17,17,0.95) 100%);">
-                    <span class="blog-card__icon">&#10003;</span>
+                <div class="blog-card__img">
+                    <img src="/images/shpon/20241107_130236.jpg" alt="Как выбрать покрасочный цех" loading="lazy">
                 </div>
                 <div class="blog-card__body">
                     <div class="blog-card__date" data-ru="16 апреля 2026" data-kz="2026 жылдың 16 сәуірі">16 апреля 2026</div>
