@@ -1270,6 +1270,26 @@ img {
     font-weight: 700;
 }
 
+.calc-table .cell-actions {
+    white-space: nowrap;
+}
+
+.calc-table .row-edit-btn {
+    background: none;
+    border: none;
+    color: var(--gold);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all var(--transition);
+}
+
+.calc-table .row-edit-btn:hover {
+    color: var(--gold-light);
+    background: rgba(201, 168, 76, 0.15);
+}
+
 .calc-table .row-delete-btn {
     background: none;
     border: none;
@@ -2109,6 +2129,25 @@ img {
 
     .calc-table-wrap {
         padding: 16px;
+    }
+
+    .calc-table .row-edit-btn,
+    .calc-table .row-delete-btn {
+        font-size: 22px;
+        padding: 8px 10px;
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calc-table-actions {
+        flex-direction: column;
+    }
+
+    .calc__order-btn {
+        flex: none;
     }
 
     .promo__inner {

@@ -201,12 +201,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <td class="cell-sqm">—</td>
             <td class="cell-coating">МДФ 16 мм, прямые</td>
             <td class="cell-cost">—</td>
-            <td><button type="button" class="row-delete-btn" title="Удалить">✕</button></td>
+            <td class="cell-actions"><button type="button" class="row-edit-btn" title="Редактировать">✎</button><button type="button" class="row-delete-btn" title="Удалить">✕</button></td>
         `;
         calcTbody.appendChild(tr);
 
         tr.addEventListener('click', (e) => {
-            if (e.target.closest('.row-delete-btn')) return;
+            if (e.target.closest('.row-delete-btn') || e.target.closest('.row-edit-btn')) return;
+            openRowModal(tr);
+        });
+        tr.querySelector('.row-edit-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
             openRowModal(tr);
         });
         tr.querySelector('.row-delete-btn').addEventListener('click', (e) => {
@@ -458,7 +462,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `https://wa.me/77074014040?text=${encodeURIComponent(msg)}`;
     }
 
-    addRowBtn.addEventListener('click', () => createRow());
+    addRowBtn.addEventListener('click', () => {
+        const tr = createRow();
+        openRowModal(tr);
+    });
 
     document.getElementById('calc-upload').addEventListener('change', (e) => {
         const file = e.target.files[0];
