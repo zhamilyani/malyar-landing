@@ -37,6 +37,30 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://malyarkapro.kz/blog/</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://malyarkapro.kz/blog/skolko-stoit-pokraska-fasadov/</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://malyarkapro.kz/blog/matovaya-ili-glyantsevaya-pokraska/</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://malyarkapro.kz/blog/kak-vybrat-pokrasochnyj-ceh/</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://malyarkapro.kz/warranty.html</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>monthly</changefreq>
