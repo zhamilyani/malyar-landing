@@ -2341,9 +2341,13 @@ body.light .process__steps::before {
 
 /* ===== THEME & LANG TOGGLE ===== */
 .header__toggles {
+    position: fixed;
+    top: 16px;
+    right: 16px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    z-index: 1001;
 }
 
 .toggle-btn {
@@ -2352,15 +2356,17 @@ body.light .process__steps::before {
     color: var(--text-muted);
     cursor: pointer;
     border-radius: 6px;
-    padding: 6px 10px;
+    padding: 6px 8px;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 600;
     transition: all var(--transition);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0;
     white-space: nowrap;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .toggle-btn:hover {
@@ -2375,29 +2381,13 @@ body.light .process__steps::before {
 }
 
 body.light .toggle-btn {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.7);
     border-color: rgba(0, 0, 0, 0.1);
 }
 
 body.light .toggle-btn:hover {
     background: rgba(160, 133, 53, 0.12);
     border-color: rgba(160, 133, 53, 0.3);
-}
-
-@media (max-width: 768px) {
-    .header__toggles {
-        position: absolute;
-        top: 22px;
-        right: 56px;
-    }
-
-    .toggle-btn span {
-        display: none;
-    }
-
-    .toggle-btn {
-        padding: 6px 8px;
-    }
 }
 
 /* Select option styling for dark theme */
