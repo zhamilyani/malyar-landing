@@ -2232,6 +2232,174 @@ img {
     margin: 0 6px;
 }
 
+/* ===== LIGHT THEME ===== */
+body.light {
+    --bg-dark: #f5f5f0;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0ede5;
+    --bg-lighter: #ece9e1;
+    --gold: #a08535;
+    --gold-dark: #8a7230;
+    --gold-light: #c9a84c;
+    --text: #3a3a3a;
+    --text-muted: #6b6b6b;
+    --text-dim: #9a9a9a;
+    --white: #1a1a1a;
+}
+
+body.light .header {
+    background: rgba(245, 245, 240, 0.9);
+    border-bottom-color: rgba(160, 133, 53, 0.15);
+}
+
+body.light .header--scrolled {
+    background: rgba(245, 245, 240, 0.97);
+    border-bottom-color: rgba(160, 133, 53, 0.25);
+}
+
+body.light .hero__bg {
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(160, 133, 53, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(160, 133, 53, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg-dark) 0%, #eae7df 100%);
+}
+
+body.light .pains {
+    background: linear-gradient(180deg, #eae7df 0%, var(--bg-dark) 100%);
+}
+
+body.light .advantages,
+body.light .portfolio,
+body.light .contacts,
+body.light .reviews {
+    background: linear-gradient(180deg, var(--bg-dark) 0%, #eae7df 100%);
+}
+
+body.light .burger span {
+    background: var(--white);
+}
+
+body.light .header__nav {
+    background: rgba(245, 245, 240, 0.98);
+}
+
+body.light .pain-card,
+body.light .service-card,
+body.light .adv-card,
+body.light .portfolio-card,
+body.light .review-card,
+body.light .calc-table-wrap,
+body.light .contacts__form,
+body.light .calc-modal,
+body.light .alert-modal {
+    border-color: rgba(160, 133, 53, 0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+body.light .calc-modal-overlay {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+body.light .alert-modal-overlay {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.light .footer {
+    border-top-color: rgba(0,0,0,0.08);
+}
+
+body.light .samples-modal__inner {
+    background: var(--bg-card);
+    border-color: rgba(160, 133, 53, 0.2);
+}
+
+body.light .notification--info {
+    background: rgba(160, 133, 53, 0.95);
+}
+
+body.light select option {
+    background: #fff;
+    color: #333;
+}
+
+body.light .btn--primary {
+    color: #fff;
+}
+
+body.light .promo__inner {
+    background: linear-gradient(135deg, rgba(160, 133, 53, 0.1) 0%, rgba(240, 237, 229, 0.8) 100%);
+    border-color: rgba(160, 133, 53, 0.25);
+}
+
+body.light .step__number {
+    background: var(--bg-card);
+}
+
+body.light .process__steps::before {
+    background: linear-gradient(180deg, var(--gold) 0%, rgba(160, 133, 53, 0.1) 100%);
+}
+
+/* ===== THEME & LANG TOGGLE ===== */
+.header__toggles {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.toggle-btn:hover {
+    background: rgba(201, 168, 76, 0.15);
+    border-color: rgba(201, 168, 76, 0.3);
+    color: var(--gold);
+}
+
+.toggle-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+body.light .toggle-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light .toggle-btn:hover {
+    background: rgba(160, 133, 53, 0.12);
+    border-color: rgba(160, 133, 53, 0.3);
+}
+
+@media (max-width: 768px) {
+    .header__toggles {
+        position: absolute;
+        top: 22px;
+        right: 56px;
+    }
+
+    .toggle-btn span {
+        display: none;
+    }
+
+    .toggle-btn {
+        padding: 6px 8px;
+    }
+}
+
 /* Select option styling for dark theme */
 select option {
     background: var(--bg-card);
