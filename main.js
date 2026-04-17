@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.dataset.qty = '1';
         tr.dataset.frezSample = '';
         tr.dataset.frezComment = '';
+        tr.dataset.frezFile = '';
         tr.dataset.colorSample = '';
         tr.dataset.colorComment = '';
         tr.dataset.cnc = '';
@@ -266,6 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const patinaChecked = document.getElementById('rm-patina').checked;
         document.getElementById('rm-patina-variant-wrap').style.display =
             (patinaChecked && material !== 'veneer') ? '' : 'none';
+        // Фрезеровка — только для фрезерованных
+        const isMilled = document.getElementById('rm-fres').value === 'milled';
+        document.getElementById('rm-frez-sample-wrap').style.display = isMilled ? '' : 'none';
+        document.getElementById('rm-frez-comment-wrap').style.display = isMilled ? '' : 'none';
     }
 
     // --- Modal open/close ---
@@ -284,6 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-qty').value = d.qty || '1';
         document.getElementById('rm-frez-sample').value = d.frezSample;
         document.getElementById('rm-frez-comment').value = d.frezComment;
+        document.getElementById('rm-frez-file').value = '';
+        const frezFileText = document.getElementById('rm-frez-file-text');
+        frezFileText.textContent = d.frezFile ? d.frezFile : (frezFileText.dataset.ru || 'Свой вариант');
         document.getElementById('rm-color-sample').value = d.colorSample;
         document.getElementById('rm-color-comment').value = d.colorComment;
         document.getElementById('rm-gloss').checked = d.gloss === 'true';
@@ -332,8 +340,14 @@ document.addEventListener('DOMContentLoaded', () => {
         d.height = document.getElementById('rm-height').value;
         d.width = document.getElementById('rm-width').value;
         d.qty = document.getElementById('rm-qty').value || '1';
-        d.frezSample = document.getElementById('rm-frez-sample').value;
-        d.frezComment = document.getElementById('rm-frez-comment').value;
+        if (d.fres === 'milled') {
+            d.frezSample = document.getElementById('rm-frez-sample').value;
+            d.frezComment = document.getElementById('rm-frez-comment').value;
+        } else {
+            d.frezSample = '';
+            d.frezComment = '';
+            d.frezFile = '';
+        }
         d.colorSample = document.getElementById('rm-color-sample').value;
         d.colorComment = document.getElementById('rm-color-comment').value;
         d.gloss = document.getElementById('rm-gloss').checked ? 'true' : 'false';
@@ -380,6 +394,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('rm-material').addEventListener('change', updateBaseInfo);
     document.getElementById('rm-thickness').addEventListener('change', updateBaseInfo);
     document.getElementById('rm-fres').addEventListener('change', updateBaseInfo);
+    document.getElementById('rm-frez-file').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!editingRow) return;
+        if (file) {
+            editingRow.dataset.frezFile = file.name;
+            document.getElementById('rm-frez-file-text').textContent = file.name;
+            showNotification('Файл прикреплён: ' + file.name, 'info');
+        }
+    });
     document.getElementById('rm-patina').addEventListener('change', updateBaseInfo);
     document.getElementById('rm-save').addEventListener('click', saveRowModal);
 
@@ -443,6 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (d.colorComment) parts.push(`(${d.colorComment})`);
             if (d.frezSample) parts.push(`фрезеровка: ${d.frezSample}`);
             if (d.frezComment) parts.push(`(${d.frezComment})`);
+            if (d.frezFile) parts.push(`файл фрезеровки: ${d.frezFile}`);
             if (d.cnc) parts.push(`ЧПУ: ${CNC_LABELS[d.cnc]}`);
             if (d.combined === 'true') {
                 let c2 = 'цвет 2: ' + (d.color2Sample || '—');
@@ -502,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 colorComment: d.colorComment || '',
                 frezSample: d.frezSample || '',
                 frezComment: d.frezComment || '',
+                frezFile: d.frezFile || '',
                 cnc: d.cnc || '',
                 combined: d.combined === 'true',
                 color2Sample: d.color2Sample || '',
@@ -527,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
             parts.push(r.coatingSummary);
             if (r.colorSample) parts.push('цвет: ' + r.colorSample);
             if (r.frezSample) parts.push('фрезеровка: ' + r.frezSample);
+            if (r.frezFile) parts.push('файл: ' + r.frezFile);
             parts.push(formatPrice(r.cost));
             msgRows.push((i + 1) + '. ' + parts.join(', '));
         });

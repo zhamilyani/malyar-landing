@@ -211,7 +211,7 @@
                 </div>
 
                 <!-- Строка 4: Фрезеровка + Присадка -->
-                <div class="calc__field calc__field--row-start">
+                <div class="calc__field calc__field--row-start" id="rm-frez-sample-wrap">
                     <label data-ru="Фрезеровка — образец" data-kz="Фрезерлеу — үлгі">Фрезеровка — образец</label>
                     <div class="frez-sample-row">
                         <select id="rm-frez-sample">
@@ -232,9 +232,16 @@
                         <button type="button" class="btn-samples" id="btn-show-samples" data-ru="Посмотреть" data-kz="Қарау">Посмотреть</button>
                     </div>
                 </div>
-                <div class="calc__field">
+                <div class="calc__field" id="rm-frez-comment-wrap">
                     <label data-ru="Фрезеровка — комментарий" data-kz="Фрезерлеу — түсініктеме">Фрезеровка — комментарий</label>
-                    <input type="text" id="rm-frez-comment" placeholder="—">
+                    <div class="frez-sample-row">
+                        <input type="text" id="rm-frez-comment" placeholder="—">
+                        <label class="btn-samples" id="rm-frez-file-label" title="Прикрепить свой вариант фрезеровки">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                            <span id="rm-frez-file-text" data-ru="Свой вариант" data-kz="Өз нұсқасы">Свой вариант</span>
+                            <input type="file" id="rm-frez-file" accept=".jpg,.jpeg,.png,.pdf,.dwg,.dxf,.webp" hidden>
+                        </label>
+                    </div>
                 </div>
                 <div class="calc__field calc__field--checkbox">
                     <label><input type="checkbox" id="rm-prisadka"> <span data-ru="Присадка" data-kz="Тесік бұрғылау">Присадка</span></label>
@@ -410,7 +417,7 @@ const GALLERY_DATA = {
 </script>
 
 <script src="../shared.js?v=20260417"></script>
-<script src="../main.js?v=20260417b"></script>
+<script src="../main.js?v=20260417c"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle(document.getElementById('theme-toggle'));
