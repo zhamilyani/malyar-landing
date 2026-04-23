@@ -2116,7 +2116,42 @@ img {
     }
 
     .header__phone {
+        padding: 8px 10px;
+        font-size: 13px;
+        gap: 6px;
+    }
+
+    .header__phone-text {
         display: none;
+    }
+
+    .header__toggles {
+        position: static;
+        top: auto;
+        right: auto;
+        gap: 4px;
+    }
+
+    .toggle-btn {
+        padding: 5px 7px;
+        font-size: 12px;
+    }
+
+    .header__inner {
+        gap: 6px;
+    }
+
+    .header__logo-img {
+        height: 30px;
+    }
+
+    .logo-glass {
+        padding: 4px 10px 3px;
+    }
+
+    .logo-text {
+        font-size: 11px;
+        letter-spacing: 1px;
     }
 
     .burger {
@@ -2126,6 +2161,10 @@ img {
     .hero {
         padding: 100px 0 60px;
         min-height: auto;
+    }
+
+    .hero__title br {
+        display: none;
     }
 
     .hero__stats {
@@ -2254,10 +2293,10 @@ img {
     }
 
     .whatsapp-float {
-        bottom: 20px;
-        right: 20px;
-        width: 52px;
-        height: 52px;
+        bottom: 84px;
+        right: 16px;
+        width: 48px;
+        height: 48px;
     }
 
     .whatsapp-float svg {
@@ -2268,6 +2307,250 @@ img {
     .row-modal__grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ===== MOBILE STICKY CTA BAR ===== */
+.mobile-cta-bar {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    gap: 10px;
+    background: rgba(17, 17, 17, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(201, 168, 76, 0.25);
+}
+
+.mobile-cta-bar__btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 48px;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.mobile-cta-bar__btn:active {
+    transform: scale(0.97);
+    filter: brightness(0.92);
+}
+
+.mobile-cta-bar__btn--call {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #111;
+}
+
+.mobile-cta-bar__btn--wa {
+    background: var(--green-wa);
+    color: #fff;
+}
+
+body.light .mobile-cta-bar {
+    background: rgba(245, 245, 240, 0.97);
+    border-top-color: rgba(160, 133, 53, 0.25);
+}
+
+body.light .mobile-cta-bar__btn--call {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .mobile-cta-bar {
+        display: flex;
+    }
+    body {
+        padding-bottom: 78px;
+    }
+    .whatsapp-float {
+        bottom: 88px;
+    }
+}
+
+/* ===== CALC TABLE → MOBILE CARDS ===== */
+.calc__field-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .calc-table-scroll {
+        overflow-x: visible;
+        margin: 0;
+        padding: 0;
+    }
+
+    .calc-table,
+    .calc-table thead,
+    .calc-table tbody,
+    .calc-table tfoot,
+    .calc-table tr,
+    .calc-table td,
+    .calc-table th {
+        display: block;
+        width: 100%;
+    }
+
+    .calc-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .calc-table thead {
+        position: absolute;
+        left: -9999px;
+        top: -9999px;
+        visibility: hidden;
+    }
+
+    .calc-table tbody tr {
+        background: var(--bg-lighter);
+        border: 1px solid rgba(201, 168, 76, 0.22);
+        border-radius: 10px;
+        padding: 14px 14px 12px;
+        margin-bottom: 12px;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .calc-table tbody tr:hover {
+        background: var(--bg-lighter);
+    }
+
+    .calc-table tbody td {
+        border: none !important;
+        padding: 5px 0;
+        text-align: left !important;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        min-height: 24px;
+    }
+
+    .calc-table tbody td::before {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 500;
+        flex-shrink: 0;
+    }
+
+    .calc-table tbody .cell-num {
+        padding: 0 0 10px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 15px;
+        justify-content: flex-start;
+    }
+
+    .calc-table tbody .cell-num::before {
+        content: '№ ';
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-right: 4px;
+    }
+
+    .calc-table tbody .cell-room::before { content: 'Помещение'; }
+    .calc-table tbody .cell-height::before { content: 'Высота'; }
+    .calc-table tbody .cell-width::before { content: 'Ширина'; }
+    .calc-table tbody .cell-qty::before { content: 'Кол-во'; }
+    .calc-table tbody .cell-sqm::before { content: 'м²'; }
+    .calc-table tbody .cell-coating::before { content: 'Покрытие'; }
+    .calc-table tbody .cell-cost::before { content: 'Стоимость'; }
+
+    .calc-table tbody .cell-room,
+    .calc-table tbody .cell-coating {
+        flex-wrap: wrap;
+    }
+
+    .calc-table tbody .cell-room,
+    .calc-table tbody .cell-coating {
+        align-items: flex-start;
+    }
+
+    .calc-table tbody .cell-room,
+    .calc-table tbody .cell-coating {
+        color: var(--text);
+        text-align: right !important;
+    }
+
+    .calc-table tbody .cell-cost {
+        padding-top: 10px;
+        margin-top: 8px;
+        border-top: 1px solid rgba(201, 168, 76, 0.15) !important;
+        font-size: 16px;
+    }
+
+    .calc-table tbody .cell-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent;
+        display: flex;
+        gap: 4px;
+    }
+
+    .calc-table tbody .cell-actions::before {
+        display: none;
+    }
+
+    /* Footer (ИТОГО) as card */
+    .calc-table tfoot {
+        background: transparent;
+    }
+
+    .calc-table tfoot tr {
+        background: rgba(201, 168, 76, 0.1);
+        border: 1px solid rgba(201, 168, 76, 0.3);
+        border-radius: 10px;
+        padding: 14px;
+        margin-top: 8px;
+    }
+
+    .calc-table tfoot td {
+        border: none !important;
+        padding: 4px 0 !important;
+        text-align: left !important;
+        background: transparent !important;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .calc-table tfoot td:empty {
+        display: none;
+    }
+
+    .calc-table tfoot .tfoot-label {
+        color: var(--gold);
+        font-size: 16px;
+        padding-bottom: 8px !important;
+        margin-bottom: 4px;
+        border-bottom: 1px solid rgba(201, 168, 76, 0.2) !important;
+    }
+
+    .calc-table tfoot .tfoot-qty::before { content: 'Кол-во фасадов'; color: var(--text-muted); }
+    .calc-table tfoot #total-sqm::before { content: 'Всего м²'; color: var(--text-muted); }
+    .calc-table tfoot #total-cost::before { content: 'Итого'; color: var(--text-muted); font-weight: 500; }
+    .calc-table tfoot #total-cost { font-size: 17px; }
 }
 
 /* ===== BREADCRUMB ===== */
