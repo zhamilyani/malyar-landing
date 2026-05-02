@@ -316,9 +316,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         rowModal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        rowModalDirty = false;
         requestAnimationFrame(() => {
             requestAnimationFrame(() => rowModal.classList.add('visible'));
         });
+    }
+
+    let rowModalDirty = false;
+    document.getElementById('row-modal-form').addEventListener('input', () => { rowModalDirty = true; });
+    document.getElementById('row-modal-form').addEventListener('change', () => { rowModalDirty = true; });
+
+    const confirmExitModal = document.getElementById('confirm-exit-modal');
+    function showConfirmExit() {
+        confirmExitModal.classList.add('active');
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => confirmExitModal.classList.add('visible'));
+        });
+    }
+    function hideConfirmExit() {
+        confirmExitModal.classList.remove('visible');
+        setTimeout(() => confirmExitModal.classList.remove('active'), 300);
+    }
+    function requestCloseRowModal() {
+        if (rowModalDirty) {
+            showConfirmExit();
+        } else {
+            closeRowModal();
+        }
     }
 
     function closeRowModal() {
@@ -368,9 +392,17 @@ document.addEventListener('DOMContentLoaded', () => {
         closeRowModal();
     }
 
-    document.getElementById('row-modal-close').addEventListener('click', closeRowModal);
-    rowModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeRowModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && rowModal.classList.contains('active')) closeRowModal(); });
+    document.getElementById('row-modal-close').addEventListener('click', requestCloseRowModal);
+    rowModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) requestCloseRowModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (confirmExitModal.classList.contains('active')) { hideConfirmExit(); return; }
+        if (rowModal.classList.contains('active')) requestCloseRowModal();
+    });
+    document.getElementById('confirm-exit-close').addEventListener('click', hideConfirmExit);
+    document.getElementById('confirm-exit-cancel').addEventListener('click', hideConfirmExit);
+    document.getElementById('confirm-exit-ok').addEventListener('click', () => { hideConfirmExit(); closeRowModal(); });
+    confirmExitModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) hideConfirmExit(); });
     document.getElementById('rm-prisadka').addEventListener('change', (e) => {
         document.getElementById('rm-holes-wrap').style.display = e.target.checked ? '' : 'none';
     });

@@ -1126,6 +1126,17 @@ img {
 .alert-modal__ok {
     min-width: 160px;
 }
+.confirm-exit__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.confirm-exit__actions .btn { min-width: 160px; }
+@media (max-width: 480px) {
+    .confirm-exit__actions { flex-direction: column-reverse; }
+    .confirm-exit__actions .btn { width: 100%; min-width: 0; }
+}
 
 .calc__base-info {
     padding: 14px 16px;
@@ -2126,10 +2137,11 @@ img {
     }
 
     .header__toggles {
-        position: static;
+        position: relative;
         top: auto;
         right: auto;
         gap: 4px;
+        z-index: 1002;
     }
 
     .toggle-btn {

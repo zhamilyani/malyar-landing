@@ -51,7 +51,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=20260424">
+    <link rel="stylesheet" href="../style.css?v=20260502">
 </head>
 <body>
 
@@ -152,6 +152,20 @@
         <h3 class="alert-modal__title" id="alert-modal-title">Минимальный заказ не достигнут</h3>
         <p class="alert-modal__text" id="alert-modal-text">Общая квадратура заказа не должна составлять менее 2 кв.м.</p>
         <button class="btn btn--primary alert-modal__ok" id="alert-modal-ok" data-ru="Понятно" data-kz="Түсінікті">Понятно</button>
+    </div>
+</div>
+
+<!-- CONFIRM EXIT MODAL -->
+<div class="alert-modal-overlay" id="confirm-exit-modal">
+    <div class="alert-modal">
+        <button class="alert-modal__close" id="confirm-exit-close" aria-label="Закрыть">&times;</button>
+        <div class="alert-modal__icon">?</div>
+        <h3 class="alert-modal__title" data-ru="Выйти без сохранения?" data-kz="Сақтаусыз шығу керек пе?">Выйти без сохранения?</h3>
+        <p class="alert-modal__text" data-ru="Внесённые в форму данные будут потеряны." data-kz="Формаға енгізілген деректер жоғалады.">Внесённые в форму данные будут потеряны.</p>
+        <div class="confirm-exit__actions">
+            <button class="btn btn--secondary" id="confirm-exit-cancel" data-ru="Продолжить" data-kz="Жалғастыру">Продолжить</button>
+            <button class="btn btn--primary" id="confirm-exit-ok" data-ru="Выйти без сохранения" data-kz="Сақтаусыз шығу">Выйти без сохранения</button>
+        </div>
     </div>
 </div>
 
@@ -429,7 +443,7 @@ const GALLERY_DATA = {
 </script>
 
 <script src="../shared.js?v=20260417"></script>
-<script src="../main.js?v=20260417c"></script>
+<script src="../main.js?v=20260502"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle(document.getElementById('theme-toggle'));

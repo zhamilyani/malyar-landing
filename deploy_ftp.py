@@ -10,6 +10,7 @@ REMOTE_BASE = "httpdocs"
 
 FILES = [
     "style.css",
+    "main.js",
     "index.html",
     "kalkulyator/index.html",
     "uslugi/index.html",
