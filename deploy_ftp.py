@@ -11,7 +11,10 @@ REMOTE_BASE = "httpdocs"
 FILES = [
     "style.css",
     "main.js",
+    "pixel.js",
     "index.html",
+    "privacy.html",
+    "warranty.html",
     "kalkulyator/index.html",
     "uslugi/index.html",
     "portfolio/index.html",

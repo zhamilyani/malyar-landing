@@ -610,6 +610,11 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlertModal('Минимальный заказ не достигнут', 'Общая квадратура заказа не должна составлять менее 2 кв.м. Добавьте ещё фасады или увеличьте размеры.');
         } else {
             sendToCRM();
+            // Meta Pixel — Lead event with estimated value
+            if (typeof fbq === 'function') {
+                const totalCost = parseInt((document.getElementById('total-cost').textContent || '').replace(/\D/g, ''), 10) || 0;
+                try { fbq('track', 'Lead', { value: totalCost, currency: 'KZT' }); } catch (_) {}
+            }
         }
     });
 
@@ -639,6 +644,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (comment) msg += `\nКомментарий: ${comment}`;
 
         window.open(`https://wa.me/77074014040?text=${encodeURIComponent(msg)}`, '_blank');
+
+        // Meta Pixel — Lead from contact form
+        if (typeof fbq === 'function') {
+            try { fbq('track', 'Lead', { content_name: 'contact_form', currency: 'KZT' }); } catch (_) {}
+        }
 
         // Send to CRM
         fetch(CRM_URL + '/api/orders/submit', {
