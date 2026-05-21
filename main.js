@@ -610,10 +610,14 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlertModal('Минимальный заказ не достигнут', 'Общая квадратура заказа не должна составлять менее 2 кв.м. Добавьте ещё фасады или увеличьте размеры.');
         } else {
             sendToCRM();
+            const totalCost = parseInt((document.getElementById('total-cost').textContent || '').replace(/\D/g, ''), 10) || 0;
             // Meta Pixel — Lead event with estimated value
             if (typeof fbq === 'function') {
-                const totalCost = parseInt((document.getElementById('total-cost').textContent || '').replace(/\D/g, ''), 10) || 0;
                 try { fbq('track', 'Lead', { value: totalCost, currency: 'KZT' }); } catch (_) {}
+            }
+            // Google Ads — calc conversion with order value in KZT
+            if (typeof window.trackConversion === 'function') {
+                window.trackConversion('calc', totalCost);
             }
         }
     });
@@ -633,9 +637,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const phone = document.getElementById('form-phone').value.trim();
         const service = document.getElementById('form-service').value;
         const comment = document.getElementById('form-comment').value.trim();
+        const consent = document.getElementById('form-consent');
 
         if (!name || !phone) {
             showNotification('Заполните имя и телефон', 'error');
+            return;
+        }
+        if (consent && !consent.checked) {
+            showNotification('Подтвердите согласие на обработку персональных данных', 'error');
             return;
         }
 
@@ -648,6 +657,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Meta Pixel — Lead from contact form
         if (typeof fbq === 'function') {
             try { fbq('track', 'Lead', { content_name: 'contact_form', currency: 'KZT' }); } catch (_) {}
+        }
+        // Google Ads — Enhanced Conversion: send user_data BEFORE event
+        if (typeof window.setUserData === 'function') {
+            window.setUserData({
+                phone:     window.normalizePhone(phone),
+                firstName: window.normalizeText(name)
+            });
+        }
+        if (typeof window.trackConversion === 'function') {
+            window.trackConversion('form', 0);
         }
 
         // Send to CRM
@@ -873,6 +892,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.showAlertModal = showAlertModal;
 
+    // ===== CALLBACK MODAL =====
+    const callbackModal = document.getElementById('callback-modal');
+    if (callbackModal) {
+        const callbackForm = document.getElementById('callback-form');
+        const callbackPhone = document.getElementById('callback-phone');
+
+        function openCallback() {
+            callbackModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => callbackPhone.focus(), 100);
+        }
+        function closeCallback() {
+            callbackModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('[data-callback-open]').forEach(el => {
+            el.addEventListener('click', openCallback);
+        });
+        callbackModal.querySelector('.callback-modal__close').addEventListener('click', closeCallback);
+        callbackModal.querySelector('.callback-modal__backdrop').addEventListener('click', closeCallback);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && callbackModal.classList.contains('active')) closeCallback();
+        });
+
+        callbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const phone = callbackPhone.value.trim();
+            const consent = document.getElementById('callback-consent');
+            if (phone.replace(/\D/g, '').length < 10) {
+                callbackPhone.style.borderColor = '#e57373';
+                callbackPhone.focus();
+                return;
+            }
+            if (consent && !consent.checked) {
+                showNotification('Подтвердите согласие на обработку персональных данных', 'error');
+                consent.focus();
+                return;
+            }
+            // Submit to CRM
+            fetch(CRM_URL + '/api/orders/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    source: 'callback',
+                    clientName: 'Заявка на обратный звонок',
+                    clientPhone: phone,
+                    message: 'Клиент просит перезвонить.'
+                })
+            }).catch(() => {});
+
+            // Meta Pixel — Lead from callback
+            if (typeof fbq === 'function') {
+                try { fbq('track', 'Lead', { content_name: 'callback', currency: 'KZT' }); } catch (_) {}
+            }
+            // Google Ads — Enhanced Conversion: phone only (no name field)
+            if (typeof window.setUserData === 'function') {
+                window.setUserData({ phone: window.normalizePhone(phone) });
+            }
+            if (typeof window.trackConversion === 'function') {
+                window.trackConversion('form', 0);
+            }
+
+            closeCallback();
+            callbackForm.reset();
+            showAlertModal('Спасибо!', 'Перезвоним в течение 5 минут в рабочие часы.');
+        });
+    }
+
     // ===== NOTIFICATION (replaces alert) =====
     window.showNotification = function(text, type) {
         const el = document.createElement('div');
@@ -885,5 +973,41 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => el.remove(), 300);
         }, 3000);
     };
+
+    // ===== BEFORE / AFTER SLIDER =====
+    document.querySelectorAll('[data-ba]').forEach(slider => {
+        const after = slider.querySelector('.ba-slider__after');
+        const handle = slider.querySelector('.ba-slider__handle');
+        if (!after || !handle) return;
+        let dragging = false;
+
+        const setFromX = (clientX) => {
+            const r = slider.getBoundingClientRect();
+            let pct = ((clientX - r.left) / r.width) * 100;
+            pct = Math.max(0, Math.min(100, pct));
+            after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+            handle.style.left = `${pct}%`;
+        };
+
+        slider.addEventListener('pointerdown', (e) => {
+            dragging = true;
+            slider.classList.add('is-dragging');
+            try { slider.setPointerCapture(e.pointerId); } catch (_) {}
+            setFromX(e.clientX);
+            e.preventDefault();
+        });
+        slider.addEventListener('pointermove', (e) => {
+            if (dragging) setFromX(e.clientX);
+        });
+        const stop = (e) => {
+            if (!dragging) return;
+            dragging = false;
+            slider.classList.remove('is-dragging');
+            try { slider.releasePointerCapture(e.pointerId); } catch (_) {}
+        };
+        slider.addEventListener('pointerup', stop);
+        slider.addEventListener('pointercancel', stop);
+        slider.addEventListener('pointerleave', stop);
+    });
 
 });

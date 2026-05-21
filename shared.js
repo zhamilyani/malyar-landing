@@ -1,3 +1,85 @@
+// ===== GOOGLE ADS CONVERSION TRACKING =====
+(function() {
+    var CONV_ID = 'AW-18095965049';
+    var LABELS = {
+        call:     '9pHpCI2Av68cEPmG6rRD',
+        whatsapp: 'N1RnCNGdv68cEPmG6rRD',
+        calc:     '5o-ICLPVpa8cEPmG6rRD',
+        form:     '3TD5CMrDv68cEPmG6rRD'
+    };
+
+    // --- Enhanced Conversions normalizers ---
+    // KZ phone → E.164. Returns null on invalid.
+    window.normalizePhone = function(raw) {
+        if (!raw) return null;
+        var digits = String(raw).replace(/\D/g, '');
+        if (digits.length < 10) return null;
+        // 8XXXXXXXXXX → 7XXXXXXXXXX
+        var normalized = digits.charAt(0) === '8' ? '7' + digits.slice(1) : digits;
+        return '+' + normalized;
+    };
+
+    // Lowercase + trim. Returns null if empty.
+    window.normalizeText = function(raw) {
+        if (!raw) return null;
+        var s = String(raw).trim().toLowerCase();
+        return s.length ? s : null;
+    };
+
+    // Lowercase + trim. Returns null if not email-shaped.
+    window.normalizeEmail = function(raw) {
+        if (!raw) return null;
+        var s = String(raw).trim().toLowerCase();
+        return s.indexOf('@') > 0 ? s : null;
+    };
+
+    // Set user_data for Enhanced Conversions. Pass {phone, email, firstName, lastName}.
+    // Skips empty/null fields. address.country always 'KZ' when address present.
+    // Must be called BEFORE trackConversion.
+    window.setUserData = function(data) {
+        if (typeof gtag !== 'function' || !data) return;
+        var u = {};
+        if (data.email) u.email = data.email;
+        if (data.phone) u.phone_number = data.phone;
+        var addr = {};
+        if (data.firstName) addr.first_name = data.firstName;
+        if (data.lastName)  addr.last_name  = data.lastName;
+        if (addr.first_name || addr.last_name) {
+            addr.country = 'KZ';
+            u.address = addr;
+        }
+        if (!Object.keys(u).length) return;
+        try { gtag('set', 'user_data', u); } catch (_) {}
+    };
+
+    // Send conversion. value optional (number). Currency always USD per Ads account setup.
+    window.trackConversion = function(type, value) {
+        if (typeof gtag !== 'function') return;
+        var label = LABELS[type];
+        if (!label) return;
+        try {
+            gtag('event', 'conversion', {
+                send_to:  CONV_ID + '/' + label,
+                value:    typeof value === 'number' ? value : 0,
+                currency: 'USD'
+            });
+        } catch (_) {}
+    };
+
+    // Auto-track tel: and WhatsApp link clicks (works site-wide for any link).
+    // No user_data — we don't know who's clicking.
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest && e.target.closest('a');
+        if (!link) return;
+        var href = link.getAttribute('href') || '';
+        if (href.indexOf('tel:') === 0) {
+            window.trackConversion('call', 0);
+        } else if (href.indexOf('wa.me/') !== -1 || href.indexOf('api.whatsapp.com') !== -1) {
+            window.trackConversion('whatsapp', 0);
+        }
+    }, true);
+})();
+
 // ===== THEME & LANGUAGE TOGGLE =====
 
 (function() {
