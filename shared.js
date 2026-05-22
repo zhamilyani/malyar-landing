@@ -1,3 +1,7 @@
+// ===== CRM ENDPOINT =====
+// Точка приёма заявок с лендинга. Если переедем на другой домен — менять только тут.
+window.CRM_URL = 'https://malyar-crm-production.up.railway.app';
+
 // ===== GOOGLE ADS CONVERSION TRACKING =====
 (function() {
     var CONV_ID = 'AW-18095965049';
@@ -78,6 +82,41 @@
             window.trackConversion('whatsapp', 0);
         }
     }, true);
+})();
+
+// ===== ANIMATE-UP OBSERVER (нужен на ВСЕХ страницах, не только тех что грузят main.js) =====
+(function() {
+    function initAnimateUp() {
+        const animatedElements = document.querySelectorAll('.animate-up');
+        if (!animatedElements.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            animatedElements.forEach(el => el.classList.add('visible'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        animatedElements.forEach(el => observer.observe(el));
+
+        // Safety net: после 1.5с принудительно показать всё, что ещё скрыто.
+        setTimeout(() => {
+            document.querySelectorAll('.animate-up:not(.visible)').forEach(el => el.classList.add('visible'));
+        }, 1500);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAnimateUp);
+    } else {
+        initAnimateUp();
+    }
 })();
 
 // ===== THEME & LANGUAGE TOGGLE =====
