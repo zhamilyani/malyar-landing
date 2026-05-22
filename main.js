@@ -397,13 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
     rowModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) requestCloseRowModal(); });
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        if (confirmExitModal.classList.contains('active')) { hideConfirmExit(); return; }
+        if (confirmExitModal && confirmExitModal.classList.contains('active')) { hideConfirmExit(); return; }
         if (rowModal.classList.contains('active')) requestCloseRowModal();
     });
-    document.getElementById('confirm-exit-close').addEventListener('click', hideConfirmExit);
-    document.getElementById('confirm-exit-cancel').addEventListener('click', hideConfirmExit);
-    document.getElementById('confirm-exit-ok').addEventListener('click', () => { hideConfirmExit(); closeRowModal(); });
-    confirmExitModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) hideConfirmExit(); });
+    if (confirmExitModal) {
+        document.getElementById('confirm-exit-close').addEventListener('click', hideConfirmExit);
+        document.getElementById('confirm-exit-cancel').addEventListener('click', hideConfirmExit);
+        document.getElementById('confirm-exit-ok').addEventListener('click', () => { hideConfirmExit(); closeRowModal(); });
+        confirmExitModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) hideConfirmExit(); });
+    }
     document.getElementById('rm-prisadka').addEventListener('change', (e) => {
         document.getElementById('rm-holes-wrap').style.display = e.target.checked ? '' : 'none';
     });
