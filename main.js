@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addRowBtn = document.getElementById('calc-add-row');
     const rowModal = document.getElementById('row-modal');
 
+    if (calcTbody) {
     // === PRICING ===
     const HOLE_PRICE = 1000; // ₸ за одно отверстие присадки
 
@@ -532,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== CRM INTEGRATION =====
-    const CRM_URL = 'https://malyar-crm-production.up.railway.app';
+    // CRM_URL приходит из shared.js (window.CRM_URL)
 
     function sendToCRM() {
         const rows = [];
@@ -589,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
             msgRows.push((i + 1) + '. ' + parts.join(', '));
         });
 
-        fetch(CRM_URL + '/api/orders/submit', {
+        fetch(window.CRM_URL + '/api/orders/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -626,6 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createRow();
     createRow();
     createRow();
+    } // end if (calcTbody)
 
     // ===== CONTACT FORM =====
     const contactForm = document.getElementById('contact-form');
@@ -670,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Send to CRM
-        fetch(CRM_URL + '/api/orders/submit', {
+        fetch(window.CRM_URL + '/api/orders/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -932,7 +934,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             // Submit to CRM
-            fetch(CRM_URL + '/api/orders/submit', {
+            fetch(window.CRM_URL + '/api/orders/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
