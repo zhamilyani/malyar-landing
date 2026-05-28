@@ -192,7 +192,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260519">
+    <link rel="stylesheet" href="style.css?v=20260528">
 
     <!-- Google Ads gtag.js -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18095965049"></script>
@@ -491,7 +491,7 @@
                     <img src="images/mdf/20240710_110514.jpg" alt="Покраска МДФ фасадов матовый белый — malyarkapro.kz Алматы" loading="lazy">
                     <div class="portfolio-card__overlay">
                         <span class="portfolio-card__tag">МДФ</span>
-                        <span class="portfolio-card__count">5 фото</span>
+                        <span class="portfolio-card__count">20 фото</span>
                     </div>
                 </div>
                 <div class="portfolio-card__info">
@@ -499,10 +499,12 @@
                     <p data-ru="Матовая эмаль Milesi · 5 дней · 28 м²" data-kz="Milesi матты эмалі · 5 күн · 28 м²">Матовая эмаль Milesi · 5 дней · 28 м²</p>
                 </div>
             </div>
-            <div class="portfolio-card animate-up">
-                <div class="portfolio-card__img" style="background: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 50%, #1a1a1a 100%);">
+            <div class="portfolio-card animate-up portfolio-card--gallery" data-gallery="gloss">
+                <div class="portfolio-card__img">
+                    <img src="images/gloss/gloss-2026-02.jpg" alt="Кухонные фасады в высоком глянце — malyarkapro.kz Алматы" loading="lazy">
                     <div class="portfolio-card__overlay">
                         <span class="portfolio-card__tag">Глянец</span>
+                        <span class="portfolio-card__count">3 фото</span>
                     </div>
                 </div>
                 <div class="portfolio-card__info">
@@ -515,7 +517,7 @@
                     <img src="images/shpon/20240710_110637.jpg" alt="Тонировка и лакировка шпона дуба лаком Milesi — malyarkapro.kz Алматы" loading="lazy">
                     <div class="portfolio-card__overlay">
                         <span class="portfolio-card__tag">Шпон</span>
-                        <span class="portfolio-card__count">9 фото</span>
+                        <span class="portfolio-card__count">13 фото</span>
                     </div>
                 </div>
                 <div class="portfolio-card__info">
@@ -534,10 +536,12 @@
                     <p data-ru="Патина золото на МДФ фасадах · 6 дней · 22 м²" data-kz="МДФ фасадтарда алтын патина · 6 күн · 22 м²">Патина золото на МДФ фасадах · 6 дней · 22 м²</p>
                 </div>
             </div>
-            <div class="portfolio-card animate-up">
-                <div class="portfolio-card__img" style="background: linear-gradient(135deg, #d4c5a9 0%, #b8a88a 50%, #9c8c70 100%);">
+            <div class="portfolio-card animate-up portfolio-card--ba" data-ba-set="repaint">
+                <div class="portfolio-card__img">
+                    <img src="images/portfolio/repaint/1-after.jpg" alt="Перекраска старых кухонных фасадов в матовую эмаль — malyarkapro.kz Алматы" loading="lazy">
                     <div class="portfolio-card__overlay">
                         <span class="portfolio-card__tag">Перекраска</span>
+                        <span class="portfolio-card__count" data-ru="2 пары · До / После" data-kz="2 жұп · Дейін / Кейін">2 пары · До / После</span>
                     </div>
                 </div>
                 <div class="portfolio-card__info">
@@ -732,10 +736,12 @@
                 <div class="calc__field calc__field--row-start">
                     <label data-ru="Высота (мм)" data-kz="Биіктігі (мм)">Высота (мм)</label>
                     <input type="number" id="rm-height" min="1" placeholder="716">
+                    <label class="integration-check"><input type="checkbox" id="rm-integration-height"><span class="integration-chip" data-ru="интеграция" data-kz="интеграция">интеграция</span></label>
                 </div>
                 <div class="calc__field">
                     <label data-ru="Ширина (мм)" data-kz="Ені (мм)">Ширина (мм)</label>
                     <input type="number" id="rm-width" min="1" placeholder="396">
+                    <label class="integration-check"><input type="checkbox" id="rm-integration-width"><span class="integration-chip" data-ru="интеграция" data-kz="интеграция">интеграция</span></label>
                 </div>
                 <div class="calc__field">
                     <label data-ru="Кол-во" data-kz="Саны">Кол-во</label>
@@ -1142,6 +1148,24 @@
     <div class="gallery-modal__counter" id="gallery-counter"></div>
 </div>
 
+<!-- BEFORE / AFTER MODAL -->
+<div class="ba-modal" id="ba-modal">
+    <div class="ba-modal__backdrop"></div>
+    <button class="ba-modal__close" aria-label="Закрыть">&times;</button>
+    <button class="ba-modal__arrow ba-modal__arrow--prev" id="ba-modal-prev" aria-label="Назад">&#10094;</button>
+    <button class="ba-modal__arrow ba-modal__arrow--next" id="ba-modal-next" aria-label="Вперёд">&#10095;</button>
+    <div class="ba-modal__content">
+        <div class="ba-slider" id="ba-modal-slider">
+            <img class="ba-slider__before" id="ba-modal-before" src="" alt="До">
+            <img class="ba-slider__after"  id="ba-modal-after"  src="" alt="После">
+            <span class="ba-slider__label ba-slider__label--before" data-ru="До" data-kz="Дейін">До</span>
+            <span class="ba-slider__label ba-slider__label--after"  data-ru="После" data-kz="Кейін">После</span>
+            <div class="ba-slider__handle"><span class="ba-slider__handle-icon"></span></div>
+        </div>
+    </div>
+    <div class="ba-modal__counter" id="ba-modal-counter"></div>
+</div>
+
 <script>
 // Gallery data by category
 const GALLERY_DATA = {
@@ -1150,24 +1174,56 @@ const GALLERY_DATA = {
         'images/mdf/20240710_110558.jpg',
         'images/mdf/20240710_110948.jpg',
         'images/mdf/20240716_171553.jpg',
-        'images/mdf/20240716_182932.jpg'
+        'images/mdf/20240716_182932.jpg',
+        'images/mdf/mdf-2026-01.jpg',
+        'images/mdf/mdf-2026-02.jpg',
+        'images/mdf/mdf-2026-03.jpg',
+        'images/mdf/mdf-2026-04.jpg',
+        'images/mdf/mdf-2026-05.jpg',
+        'images/mdf/mdf-2026-06.jpg',
+        'images/mdf/mdf-2026-07.jpg',
+        'images/mdf/mdf-2026-08.jpg',
+        'images/mdf/mdf-2026-09.jpg',
+        'images/mdf/mdf-2026-10.jpg',
+        'images/mdf/mdf-2026-11.jpg',
+        'images/mdf/mdf-2026-12.jpg',
+        'images/mdf/mdf-2026-13.jpg',
+        'images/mdf/mdf-2026-14.jpg',
+        'images/mdf/mdf-2026-15.jpg'
+    ],
+    gloss: [
+        'images/gloss/gloss-2026-01.jpg',
+        'images/gloss/gloss-2026-02.jpg',
+        'images/gloss/gloss-2026-03.jpg'
     ],
     shpon: [
         'images/shpon/20240710_110637.jpg',
         'images/shpon/20240710_110657.jpg',
         'images/shpon/20241107_130151.jpg',
-        'images/shpon/20241107_130155.jpg',
-        'images/shpon/20241107_130159.jpg',
         'images/shpon/20241107_130236.jpg',
         'images/shpon/20241107_130242.jpg',
         'images/shpon/20241107_130250.jpg',
-        'images/shpon/20241107_130258.jpg'
+        'images/shpon/20241107_130258.jpg',
+        'images/shpon/shpon-2026-01.jpg',
+        'images/shpon/shpon-2026-02.jpg',
+        'images/shpon/shpon-2026-03.jpg',
+        'images/shpon/shpon-2026-04.jpg',
+        'images/shpon/shpon-2026-05.jpg',
+        'images/shpon/shpon-2026-06.jpg'
+    ]
+};
+
+// Before / After pairs by set
+const BA_DATA = {
+    repaint: [
+        { before: 'images/portfolio/repaint/1-before.jpg', after: 'images/portfolio/repaint/1-after.jpg' },
+        { before: 'images/portfolio/repaint/2-before.jpg', after: 'images/portfolio/repaint/2-after.jpg' }
     ]
 };
 </script>
 
 <script src="shared.js?v=20260522"></script>
-<script src="main.js?v=20260522"></script>
+<script src="main.js?v=20260528"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle(document.getElementById('theme-toggle'));

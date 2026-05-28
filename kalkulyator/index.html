@@ -52,7 +52,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=20260519">
+    <link rel="stylesheet" href="../style.css?v=20260528">
 
     <!-- Google Ads gtag.js -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18095965049"></script>
@@ -224,10 +224,12 @@
                 <div class="calc__field calc__field--row-start">
                     <label data-ru="Высота (мм)" data-kz="Биіктігі (мм)">Высота (мм)</label>
                     <input type="number" id="rm-height" min="1" placeholder="716">
+                    <label class="integration-check"><input type="checkbox" id="rm-integration-height"><span class="integration-chip" data-ru="интеграция" data-kz="интеграция">интеграция</span></label>
                 </div>
                 <div class="calc__field">
                     <label data-ru="Ширина (мм)" data-kz="Ені (мм)">Ширина (мм)</label>
                     <input type="number" id="rm-width" min="1" placeholder="396">
+                    <label class="integration-check"><input type="checkbox" id="rm-integration-width"><span class="integration-chip" data-ru="интеграция" data-kz="интеграция">интеграция</span></label>
                 </div>
                 <div class="calc__field">
                     <label data-ru="Кол-во" data-kz="Саны">Кол-во</label>
@@ -453,7 +455,7 @@ const GALLERY_DATA = {
 </script>
 
 <script src="../shared.js?v=20260522"></script>
-<script src="../main.js?v=20260522"></script>
+<script src="../main.js?v=20260528"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle(document.getElementById('theme-toggle'));

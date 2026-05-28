@@ -1002,6 +1002,61 @@ img {
     align-items: center;
 }
 
+.integration-check {
+    display: inline-flex;
+    margin-top: 8px;
+    cursor: pointer;
+}
+.row-modal__grid .integration-check input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+.integration-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.integration-chip::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.45;
+    transition: opacity 0.15s ease;
+}
+.integration-check:hover .integration-chip {
+    border-color: var(--gold);
+    color: var(--text);
+}
+.integration-check input:checked + .integration-chip {
+    color: #1a1a1a;
+    background: var(--gold);
+    border-color: var(--gold);
+    font-weight: 600;
+}
+.integration-check input:checked + .integration-chip::before {
+    opacity: 1;
+}
+.integration-check input:focus-visible + .integration-chip {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
 .calc-table tbody tr {
     cursor: pointer;
     transition: background var(--transition);

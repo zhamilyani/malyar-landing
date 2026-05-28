@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gloss100: 'Патина + глянец 100%',
     };
     const CNC_LABELS = { '': '—', our_mdf: 'Наш МДФ', your_mdf: 'Ваш МДФ' };
+    const INTEGRATION_LABELS = { '': '—', height: 'по высоте', width: 'по ширине' };
 
     // Вычисление базовой цены ₸/м²
     function getBasePrice(material, thickness, fres) {
@@ -174,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.dataset.material = 'mdf';
         tr.dataset.thickness = '16';
         tr.dataset.fres = 'straight';
+        tr.dataset.integration = '';
         tr.dataset.height = '';
         tr.dataset.width = '';
         tr.dataset.qty = '1';
@@ -245,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (d.lac === 'true' && d.material !== 'veneer') add.push('лак');
         if (add.length) parts.push('+ ' + add.join(', '));
+        if (d.integration) parts.push('интеграция ' + (INTEGRATION_LABELS[d.integration] || d.integration));
         return parts.join(', ');
     }
 
@@ -285,6 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rm-material').value = d.material || 'mdf';
         document.getElementById('rm-thickness').value = d.thickness || '16';
         document.getElementById('rm-fres').value = d.fres || 'straight';
+        document.getElementById('rm-integration-height').checked = d.integration === 'height';
+        document.getElementById('rm-integration-width').checked = d.integration === 'width';
         document.getElementById('rm-height').value = d.height;
         document.getElementById('rm-width').value = d.width;
         document.getElementById('rm-qty').value = d.qty || '1';
@@ -362,6 +367,8 @@ document.addEventListener('DOMContentLoaded', () => {
         d.material = document.getElementById('rm-material').value;
         d.thickness = document.getElementById('rm-thickness').value;
         d.fres = document.getElementById('rm-fres').value;
+        d.integration = document.getElementById('rm-integration-height').checked ? 'height'
+            : (document.getElementById('rm-integration-width').checked ? 'width' : '');
         d.height = document.getElementById('rm-height').value;
         d.width = document.getElementById('rm-width').value;
         d.qty = document.getElementById('rm-qty').value || '1';
@@ -439,6 +446,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     document.getElementById('rm-patina').addEventListener('change', updateBaseInfo);
+    // Интеграция — только по одной стороне: отметка одной снимает другую
+    const integHeight = document.getElementById('rm-integration-height');
+    const integWidth = document.getElementById('rm-integration-width');
+    integHeight.addEventListener('change', () => { if (integHeight.checked) integWidth.checked = false; });
+    integWidth.addEventListener('change', () => { if (integWidth.checked) integHeight.checked = false; });
     document.getElementById('rm-save').addEventListener('click', saveRowModal);
 
     // --- Calculations ---
@@ -552,6 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 material: d.material || 'mdf',
                 thickness: parseInt(d.thickness) || 16,
                 fres: d.fres || 'straight',
+                integration: d.integration || '',
                 gloss: d.gloss === 'true',
                 patina: d.patina === 'true',
                 patinaVariant: d.patinaVariant || 'simple',
@@ -757,6 +770,97 @@ document.addEventListener('DOMContentLoaded', () => {
                 diff < 0 ? nextSlide() : prevSlide();
             }
         }, { passive: true });
+    }
+
+    // ===== BEFORE / AFTER MODAL =====
+    const baModal = document.getElementById('ba-modal');
+    if (baModal) {
+        const baSliderEl = document.getElementById('ba-modal-slider');
+        const baBefore = document.getElementById('ba-modal-before');
+        const baAfter = document.getElementById('ba-modal-after');
+        const baHandle = baSliderEl.querySelector('.ba-slider__handle');
+        const baCounter = document.getElementById('ba-modal-counter');
+        const baPrev = document.getElementById('ba-modal-prev');
+        const baNext = document.getElementById('ba-modal-next');
+
+        let baPairs = [];
+        let baIdx = 0;
+
+        function setBaPct(pct) {
+            pct = Math.max(0, Math.min(100, pct));
+            baAfter.style.clipPath = `inset(0 0 0 ${pct}%)`;
+            baHandle.style.left = `${pct}%`;
+        }
+        function setBaFromX(clientX) {
+            const r = baSliderEl.getBoundingClientRect();
+            setBaPct(((clientX - r.left) / r.width) * 100);
+        }
+
+        function showBaPair() {
+            const p = baPairs[baIdx];
+            if (!p) return;
+            baBefore.src = p.before;
+            baAfter.src = p.after;
+            setBaPct(50);
+            baCounter.textContent = (baIdx + 1) + ' / ' + baPairs.length;
+            const single = baPairs.length <= 1;
+            baPrev.style.display = single ? 'none' : '';
+            baNext.style.display = single ? 'none' : '';
+            baCounter.style.display = single ? 'none' : '';
+        }
+        function openBa(setKey) {
+            baPairs = (typeof BA_DATA !== 'undefined' && BA_DATA[setKey]) || [];
+            if (!baPairs.length) return;
+            baIdx = 0;
+            showBaPair();
+            baModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeBa() {
+            baModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function nextBa() { baIdx = (baIdx + 1) % baPairs.length; showBaPair(); }
+        function prevBa() { baIdx = (baIdx - 1 + baPairs.length) % baPairs.length; showBaPair(); }
+
+        document.querySelectorAll('.portfolio-card--ba').forEach(card => {
+            card.addEventListener('click', () => {
+                openBa(card.dataset.baSet);
+            });
+        });
+
+        baModal.querySelector('.ba-modal__close').addEventListener('click', closeBa);
+        baModal.querySelector('.ba-modal__backdrop').addEventListener('click', closeBa);
+        baNext.addEventListener('click', nextBa);
+        baPrev.addEventListener('click', prevBa);
+
+        document.addEventListener('keydown', (e) => {
+            if (!baModal.classList.contains('active')) return;
+            if (e.key === 'Escape') closeBa();
+            if (e.key === 'ArrowRight') nextBa();
+            if (e.key === 'ArrowLeft') prevBa();
+        });
+
+        // Slider drag (mouse + touch + pen via Pointer Events)
+        let dragging = false;
+        baSliderEl.addEventListener('pointerdown', (e) => {
+            dragging = true;
+            baSliderEl.classList.add('is-dragging');
+            try { baSliderEl.setPointerCapture(e.pointerId); } catch (_) {}
+            setBaFromX(e.clientX);
+            e.preventDefault();
+        });
+        baSliderEl.addEventListener('pointermove', (e) => {
+            if (dragging) setBaFromX(e.clientX);
+        });
+        const baStop = (e) => {
+            if (!dragging) return;
+            dragging = false;
+            baSliderEl.classList.remove('is-dragging');
+            try { baSliderEl.releasePointerCapture(e.pointerId); } catch (_) {}
+        };
+        baSliderEl.addEventListener('pointerup', baStop);
+        baSliderEl.addEventListener('pointercancel', baStop);
     }
 
     // ===== SAMPLES MODAL =====
